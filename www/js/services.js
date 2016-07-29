@@ -47,4 +47,11 @@ angular.module('starter.services', [])
       return null;
     }
   };
-});
+})
+.factory('Shop',function(){
+    return{
+      getList:function(){
+        return [{id:0,name:"a"},{id:1,name:"b"},{id:2,name:"c"}];
+      }
+    }
+  });

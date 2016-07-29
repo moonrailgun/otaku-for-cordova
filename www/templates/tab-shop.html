@@ -1,0 +1,10 @@
+<ion-view view-title="Shop">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-icon-right" ng-repeat="item in shops" type="item-text-wrap" href="#/tab/shop/{{item.id}}">
+        <h2>{{item.name}}</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
