@@ -9,10 +9,9 @@ angular.module('starter.controllers', [])
       $ionicLoading.hide();
       $scope.items = items;
     });
-
-
-    $scope.click = function(){
-      console.log("a");
+    
+    $scope.search = function(searchName){
+      console.log("搜索内容:" + searchName);
     }
   })
 
