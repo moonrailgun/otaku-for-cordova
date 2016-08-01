@@ -2,8 +2,15 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope) {})
 
-.controller('ShopCtrl', function($scope,Shop){
-    $scope.shops = Shop.getList();
+.controller('ShopCtrl', function($scope,Shop,$ionicLoading){
+    $ionicLoading.show();
+    $scope.items = [];
+    Shop.getList(function(items){
+      $ionicLoading.hide();
+      $scope.items = items;
+    });
+
+
     $scope.click = function(){
       console.log("a");
     }

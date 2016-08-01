@@ -48,10 +48,19 @@ angular.module('starter.services', [])
     }
   };
 })
-.factory('Shop',function(){
-    return{
-      getList:function(){
-        return [{id:0,name:"a"},{id:1,name:"b"},{id:2,name:"c"}];
+.factory('Shop',function($http){
+    var shopItemList = [];
+
+
+    return {
+      getList:function(callback){
+        console.log("获取商店列表");
+        $http.get("http://localhost:8100/local/shop/shop-item-list.json")
+          .success(function(response) {
+            console.log("获取商店列表完毕，共有" + response.length + "个应用");
+            shopItemList = response;
+            callback(shopItemList);
+          });
       }
     }
   });

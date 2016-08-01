@@ -92,4 +92,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/dash');
 
+})
+
+.constant('$ionicLoadingConfig', {
+      content: '正在载入中...',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
 });
