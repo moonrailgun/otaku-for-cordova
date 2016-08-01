@@ -1,0 +1,33 @@
+<ion-view view-title="{{item.name}}">
+  <ion-content class="padding">
+    <div class="row">
+      <div class="col col-25">
+        <img ng-src="{{item.icon}}" style="width: 100%; height: 100%">
+      </div>
+      <div class="col col-50">
+        <h3>{{item.name}}</h3>
+        <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.author}}123123132</p>
+      </div>
+      <div class="col col-25 col-center text-center">
+        <a class="button button-calm">下载</a>
+      </div>
+    </div>
+
+    <div class="button-bar padding-bottom">
+      <a class="button">First</a>
+      <a class="button">Second</a>
+      <a class="button">Third</a>
+    </div>
+
+    <ion-slide-box class=" padding-bottom" active-slide="screenshotsSlide">
+      <ion-slide ng-repeat="screenshot in screenshots" style="width: 40%;height: auto;">
+        <div><img ng-src="{{screenshot}}" style="width: 100%;height: 100%;"></div>
+      </ion-slide>
+    </ion-slide-box>
+
+    <div class="split-line-top">
+      <h4>内容提要</h4>
+      <p class="padding-left">{{item.description}}</p>
+    </div>
+  </ion-content>
+</ion-view>

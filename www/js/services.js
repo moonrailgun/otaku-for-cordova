@@ -49,8 +49,7 @@ angular.module('starter.services', [])
   };
 })
 .factory('Shop',function($http){
-    var shopItemList = [];
-
+    var shopItemList = [];//控制器间切换不会保留
 
     return {
       getList:function(callback){
@@ -61,6 +60,26 @@ angular.module('starter.services', [])
             shopItemList = response;
             callback(shopItemList);
           });
+      },
+      getItemDetail:function(id,callback){
+        if(shopItemList.length > 0){
+          //已获得商店完整列表
+          for(var index in shopItemList){
+            var item = shopItemList[index];
+            if(item.id == id){
+              callback(item);
+              return;
+            }
+          }
+          callback(null);
+        }else{
+          var getItemDetail = this.getItemDetail;
+          this.getList(function(shopItemList) {
+            if(shopItemList.length > 0) {
+              getItemDetail(id,callback);
+            }
+          });
+        }
       }
     }
   });

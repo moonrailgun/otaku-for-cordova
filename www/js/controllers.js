@@ -9,10 +9,24 @@ angular.module('starter.controllers', [])
       $ionicLoading.hide();
       $scope.items = items;
     });
-    
+
     $scope.search = function(searchName){
       console.log("搜索内容:" + searchName);
     }
+  })
+
+.controller('ShopItemDetailCtrl',function($scope,$stateParams,$ionicLoading, Shop){
+    $scope.screenshots = [];
+    $scope.screenshotsSlide = 0;
+
+    $ionicLoading.show();
+    Shop.getItemDetail($stateParams.itemId,function(item){
+      $ionicLoading.hide();
+      if(!!item){
+        $scope.item = item;
+        $scope.screenshots = item.screenshots;
+      }
+    });
   })
 
 .controller('ChatsCtrl', function($scope, Chats) {
