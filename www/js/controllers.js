@@ -18,6 +18,7 @@ angular.module('starter.controllers', [])
 .controller('ShopItemDetailCtrl',function($scope,$stateParams,$ionicLoading, Shop){
     $scope.screenshots = [];
     $scope.screenshotsSlide = 0;
+    $scope.selectedTab = 0;
 
     $ionicLoading.show();
     Shop.getItemDetail($stateParams.itemId,function(item){
@@ -30,7 +31,7 @@ angular.module('starter.controllers', [])
 
     $scope.downloadApp = function(id, url){
       console.log(id + url);
-    }
+    };
   })
 
 .controller('ChatsCtrl', function($scope, Chats) {
