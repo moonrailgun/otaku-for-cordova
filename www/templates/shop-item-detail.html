@@ -8,7 +8,7 @@
         <h3>{{item.name}}</h3>
         <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.author}}123123132</p>
       </div>
-      <div class="col col-25 col-center text-center">
+      <div class="col col-25 col-center text-center" ng-click="downloadApp(item.id, item.download)">
         <a class="button button-calm">下载</a>
       </div>
     </div>
@@ -20,7 +20,7 @@
     </div>
 
     <ion-slide-box class=" padding-bottom" active-slide="screenshotsSlide">
-      <ion-slide ng-repeat="screenshot in screenshots" style="width: 40%;height: auto;">
+      <ion-slide ng-repeat="screenshot in item.screenshots" style="width: 40%;height: auto;">
         <div><img ng-src="{{screenshot}}" style="width: 100%;height: 100%;"></div>
       </ion-slide>
     </ion-slide-box>
@@ -28,6 +28,66 @@
     <div class="split-line-top">
       <h4>内容提要</h4>
       <p class="padding-left">{{item.description}}</p>
+    </div>
+
+    <div class="split-line-top">
+      <h4>信息</h4>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          开发者
+        </div>
+        <div class="col col-75">
+          {{item.author}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          类型
+        </div>
+        <div class="col col-75">
+          {{item.type}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          版本号
+        </div>
+        <div class="col col-75">
+          {{item.version}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          更新日期
+        </div>
+        <div class="col col-75">
+          {{item.updatedTime}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          发布日期
+        </div>
+        <div class="col col-75">
+          {{item.createdTime}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          大小
+        </div>
+        <div class="col col-75">
+          {{(item.size / 1024).toFixed(2)}}MB
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col-25 grey text-right">
+          兼容性
+        </div>
+        <div class="col col-75">
+          需要Otaku! {{item.needVersion}} 以上版本
+        </div>
+      </div>
     </div>
   </ion-content>
 </ion-view>

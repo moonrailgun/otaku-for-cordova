@@ -24,9 +24,13 @@ angular.module('starter.controllers', [])
       $ionicLoading.hide();
       if(!!item){
         $scope.item = item;
-        $scope.screenshots = item.screenshots;
+        //$scope.screenshots = item.screenshots;
       }
     });
+
+    $scope.downloadApp = function(id, url){
+      console.log(id + url);
+    }
   })
 
 .controller('ChatsCtrl', function($scope, Chats) {
