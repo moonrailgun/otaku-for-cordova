@@ -1,6 +1,22 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope) {
+    $scope.apps = [
+      {
+        "name":"计算器",
+        "icon":"http://a4.mzstatic.com/us/r30/Purple18/v4/59/e3/2e/59e32e26-d0a4-2d3d-5fbb-0203444c5337/icon175x175.jpeg",
+        "path":""
+      },{
+        "name":"test",
+        "icon":"http://img5.imgtn.bdimg.com/it/u=677297685,3127133702&fm=21&gp=0.jpg",
+        "path":""
+      },{},{},{}
+    ];
+
+    $scope.openApp = function(name, path){
+      console.log(name + "|" + path);
+    }
+  })
 
 .controller('ShopCtrl', function($scope,Shop,$ionicLoading){
     $ionicLoading.show();
