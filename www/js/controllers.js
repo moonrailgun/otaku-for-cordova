@@ -8,7 +8,7 @@ angular.module('starter.controllers', [])
         "path":""
       },{
         "name":"test",
-        "icon":"http://img5.imgtn.bdimg.com/it/u=677297685,3127133702&fm=21&gp=0.jpg",
+        "icon":"https://avatars1.githubusercontent.com/u/6964737?v=3&s=460",
         "path":""
       },{},{},{}
     ];
