@@ -82,4 +82,49 @@ angular.module('starter.services', [])
         }
       }
     }
+  })
+.factory('App',function($cordovaInAppBrowser){
+    return{
+      open:function(detail,callback){
+        var url = detail.url;
+        var options = {
+          location: 'yes',
+          clearcache: 'yes',
+          toolbar: 'no'
+        };
+
+        $cordovaInAppBrowser.open(url, '_blank',options)
+          .then(function(event){
+            //success
+            $rootScope.$on('$cordovaInAppBrowser:loadstart', function(e, event){
+              callback('loadstart',e,event);
+            });
+
+            $rootScope.$on('$cordovaInAppBrowser:loadstop', function(e, event){
+              callback('loadstop',e,event);
+              /*// insert CSS via code / file
+              $cordovaInAppBrowser.insertCSS({
+                code: 'body {background-color:blue;}'
+              });
+
+              // insert Javascript via code / file
+              $cordovaInAppBrowser.executeScript({
+                file: 'script.js'
+              });*/
+            });
+
+            $rootScope.$on('$cordovaInAppBrowser:loaderror', function(e, event){
+              callback('loaderror',e,event);
+            });
+
+            $rootScope.$on('$cordovaInAppBrowser:exit', function(e, event){
+              callback('exit',e,event);
+            });
+          })
+          .catch(function(event){
+            //error
+            console.log('打开过程中发生错误')
+          });
+      }
+    }
   });
