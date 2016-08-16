@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope,$cordovaFile) {
     $scope.apps = [
       {
         "name":"计算器",
@@ -15,7 +15,15 @@ angular.module('starter.controllers', [])
 
     $scope.openApp = function(name, path){
       console.log(name + "|" + path);
-    }
+    };
+
+    $cordovaFile.checkDir(cordova.file.documentsDirectory,'apps/test')
+      .then(function (success) {
+        console.log('成功');
+        console.log(success)
+      },function(error){
+        console.log(error)
+      })
   })
 
 .controller('ShopCtrl', function($scope,Shop,$ionicLoading){
