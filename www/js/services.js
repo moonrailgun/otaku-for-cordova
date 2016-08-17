@@ -54,7 +54,7 @@ angular.module('starter.services', [])
     return {
       getList:function(callback){
         console.log("获取商店列表");
-        $http.get("./local/shop/shop-item-list.json")
+        $http.get("/local/shop/shop-item-list.json")
           .success(function(response) {
             console.log("获取商店列表完毕，共有" + response.length + "个应用");
             shopItemList = response;
