@@ -1,7 +1,8 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $cordovaInAppBrowser, $http) {
-    $http.get('/local/apps/catalog.json')
+    $scope.apps = [];
+    $http.get('local/apps/catalog.json')
       .success(function(response){
         $scope.apps = response
       });
@@ -9,11 +10,16 @@ angular.module('starter.controllers', [])
     $scope.openApp = function(name, path){
       console.log(name + "|" + path);
 
-      //alert(path);
       $http.get(path + '/package.json')
         .success(function(response){
+          var url = "";
           if(response.type == "web"){
-            var url = response.url;
+            url = response.url;
+          }else if(response.type == "app"){
+            url = path + "/" + response.content;
+          }
+
+          if(url != ""){
             var options = {
               location: 'yes',
               clearcache: 'yes',
@@ -26,7 +32,7 @@ angular.module('starter.controllers', [])
               })
               .catch(function(event){
                 console.log(event);
-              })
+              });
           }
         });
     };
