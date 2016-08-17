@@ -1,11 +1,11 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope,$cordovaFile) {
+.controller('DashCtrl', function($scope, $cordovaInAppBrowser) {
     $scope.apps = [
       {
         "name":"计算器",
         "icon":"http://a4.mzstatic.com/us/r30/Purple18/v4/59/e3/2e/59e32e26-d0a4-2d3d-5fbb-0203444c5337/icon175x175.jpeg",
-        "path":""
+        "path":"local/apps/calc/index.html"
       },{
         "name":"test",
         "icon":"https://avatars1.githubusercontent.com/u/6964737?v=3&s=460",
@@ -15,15 +15,23 @@ angular.module('starter.controllers', [])
 
     $scope.openApp = function(name, path){
       console.log(name + "|" + path);
-    };
 
-    $cordovaFile.checkDir(cordova.file.documentsDirectory,'apps/test')
-      .then(function (success) {
-        console.log('成功');
-        console.log(success)
-      },function(error){
-        console.log(error)
-      })
+      //alert(path);
+      /*
+      var options = {
+        location: 'yes',
+        clearcache: 'yes',
+        toolbar: 'no'
+      };
+      $cordovaInAppBrowser.open('http://ngcordova.com', '_blank', options)
+        .then(function(event) {
+          // success
+          console.log(event);
+        })
+        .catch(function(event){
+          console.log(event);
+        })*/
+    };
   })
 
 .controller('ShopCtrl', function($scope,Shop,$ionicLoading){
@@ -58,19 +66,8 @@ angular.module('starter.controllers', [])
     };
   })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+.controller('DownloadCtrl', function($scope) {
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {

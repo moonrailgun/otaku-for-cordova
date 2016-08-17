@@ -6,3 +6,46 @@
 .grey{
   color: #888888;
 }
+
+/*
+进度条
+*/
+.progressBar .bar-unfill {
+  height:15px;
+  display:block;
+  background:#fff;
+  width:100%;
+  border-radius:8px
+}
+
+.progressBar .bar-fill {
+  height:15px;
+  display:block;
+  background:#45c9a5;
+  width:0;
+  border-radius:8px;
+  -webkit-transition:width .8s ease;
+  -moz-transition:width .8s ease;
+  transition:width .8s ease;
+  -webkit-animation:progressbar 7s infinite;
+  animation:progressbar 7s infinite
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes progressbar {
+  from {
+    width:0
+  }
+  to {
+    width:100%
+  }
+}
+/* Standard syntax */
+@keyframes progressbar {
+  from {
+    width:0
+  }
+  to {
+    width:100%
+  }
+}
