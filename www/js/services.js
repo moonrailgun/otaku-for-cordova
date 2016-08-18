@@ -1,60 +1,60 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
+  .factory('Chats', function () {
+    // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
+    // Some fake testing data
+    var chats = [{
+      id: 0,
+      name: 'Ben Sparrow',
+      lastText: 'You on your way?',
+      face: 'img/ben.png'
+    }, {
+      id: 1,
+      name: 'Max Lynx',
+      lastText: 'Hey, it\'s me',
+      face: 'img/max.png'
+    }, {
+      id: 2,
+      name: 'Adam Bradleyson',
+      lastText: 'I should buy a boat',
+      face: 'img/adam.jpg'
+    }, {
+      id: 3,
+      name: 'Perry Governor',
+      lastText: 'Look at my mukluks!',
+      face: 'img/perry.png'
+    }, {
+      id: 4,
+      name: 'Mike Harrington',
+      lastText: 'This is wicked good ice cream.',
+      face: 'img/mike.png'
+    }];
 
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    return {
+      all: function () {
+        return chats;
+      },
+      remove: function (chat) {
+        chats.splice(chats.indexOf(chat), 1);
+      },
+      get: function (chatId) {
+        for (var i = 0; i < chats.length; i++) {
+          if (chats[i].id === parseInt(chatId)) {
+            return chats[i];
+          }
         }
+        return null;
       }
-      return null;
-    }
-  };
-})
-.factory('Shop',function($http, $cordovaFile,$cordovaFileTransfer,$cordovaZip){
+    };
+  })
+  .factory('Shop', function ($http, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
     var shopItemList = [];//控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     var baseAppFilePath = "cdvfile://localhost/persistent/apps";//安卓兼容配置
 
     return {
-      checkDir:function(){
+      checkDir: function () {
         $cordovaFile.checkDir("cdvfile://localhost/persistent/", "apps")
           .then(function (success) {
             // success
@@ -70,36 +70,36 @@ angular.module('starter.services', [])
               });
           });
       },
-      getList:function(callback){
+      getList: function (callback) {
         console.log("获取商店列表");
         $http.get("local/shop/shop-item-list.json")
-          .success(function(response) {
+          .success(function (response) {
             console.log("获取商店列表完毕，共有" + response.length + "个应用");
             shopItemList = response;
             callback(shopItemList);
           });
       },
-      getItemDetail:function(id,callback){
-        if(shopItemList.length > 0){
+      getItemDetail: function (id, callback) {
+        if (shopItemList.length > 0) {
           //已获得商店完整列表
-          for(var index in shopItemList){
+          for (var index in shopItemList) {
             var item = shopItemList[index];
-            if(item.id == id){
+            if (item.id == id) {
               callback(item);
               return;
             }
           }
           callback(null);
-        }else{
+        } else {
           var getItemDetail = this.getItemDetail;
-          this.getList(function(shopItemList) {
-            if(shopItemList.length > 0) {
-              getItemDetail(id,callback);
+          this.getList(function (shopItemList) {
+            if (shopItemList.length > 0) {
+              getItemDetail(id, callback);
             }
           });
         }
       },
-      download:function(id, callback){
+      download: function (id, callback) {
         this.checkDir();
 
         var url = baseServerUrl + "/apps/" + id + ".zip";
@@ -109,44 +109,44 @@ angular.module('starter.services', [])
         var options = {};
 
         var res = {
-          complete:false,
-          progress:0,
-          error:null,
-          source:url,
-          target:target
+          complete: false,
+          progress: 0,
+          error: null,
+          source: url,
+          target: target
         };
         $cordovaFileTransfer.download(url, target, options, trustHosts)
-          .then(function(result){
+          .then(function (result) {
             // Success!
             /*console.log("download success");
-            res.complete = true;
-            callback(res)*/
+             res.complete = true;
+             callback(res)*/
             console.log("success:" + JSON.stringify(result));
-          },function(err){
+          }, function (err) {
             console.log("download error");
             res.error = err;
             callback(res);
-          },function(progress) {
+          }, function (progress) {
             var _progress = (progress.loaded / progress.total) * 100;
             console.log("downloading..." + _progress);
             res.progress = _progress;
-            if(_progress == 100){
+            if (_progress == 100) {
               res.complete = true;
             }
             callback(res);
           });
       },
-      unzip:function(path){
+      unzip: function (path) {
         $cordovaZip.unzip(path, baseAppFilePath)
-          .then(function(){
+          .then(function () {
             console.log('success');
-          },function(){
+          }, function () {
             console.log('error');
-          },function(progressEvent){
+          }, function (progressEvent) {
             console.log(progressEvent);
           })
       },
-      deleteAllApp:function(callback){
+      deleteAllApp: function (callback) {
         $cordovaFile.removeRecursively("cdvfile://localhost/persistent/", "apps")
           .then(function (success) {
             // success
@@ -158,7 +158,6 @@ angular.module('starter.services', [])
       }
     }
   })
-.factory('App',function($cordovaInAppBrowser){
-    return{
-    }
+  .factory('App', function ($cordovaInAppBrowser) {
+    return {}
   });
