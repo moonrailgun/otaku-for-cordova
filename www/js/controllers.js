@@ -68,7 +68,11 @@ angular.module('starter.controllers', [])
     $scope.downloadApp = function(id, url){
       console.log(id + url);
       Shop.download(id,function(res){
-        console.log(JSON.stringify(res))
+        console.log(JSON.stringify(res));
+        if(res.success == true) {
+          console.log("下载完毕开始解压缩");
+          Shop.unzip(res.target);
+        }
       })
     };
   })

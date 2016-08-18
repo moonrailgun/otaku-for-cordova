@@ -48,7 +48,7 @@ angular.module('starter.services', [])
     }
   };
 })
-.factory('Shop',function($http, $cordovaFile,$cordovaFileTransfer){
+.factory('Shop',function($http, $cordovaFile,$cordovaFileTransfer,$cordovaZip){
     var shopItemList = [];//控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     /*var baseAppFilePath;
@@ -114,20 +114,38 @@ angular.module('starter.services', [])
         var res = {
           complete:false,
           progress:0,
-          error:null
+          error:null,
+          source:url,
+          target:target
         };
         $cordovaFileTransfer.download(url, target, options, trustHosts)
           .then(function(result){
             // Success!
+            console.log("download success");
             res.complete = true;
             callback(res)
           },function(err){
+            console.log("download error");
             res.error = err;
             callback(res);
           },function(progress) {
-            res.progress = (progress.loaded / progress.total) * 100;
+            var _progress = (progress.loaded / progress.total) * 100;
+            console.log("downloading..." + _progress);
+            res.progress = _progress;
             callback(res);
           });
+      },
+      unzip:function(path){
+        var src = path;
+        var dest = cordova.file.documentsDirectory + "apps";
+        $cordovaZip.unzip(src, dest)
+          .then(function(){
+            console.log('success');
+          },function(){
+            console.log('error');
+          },function(progressEvent){
+            console.log(progressEvent);
+          })
       }
     }
   })
