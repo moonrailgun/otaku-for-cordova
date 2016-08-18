@@ -15,7 +15,7 @@ angular.module('starter.controllers', [])
           var url = "";
           if(response.type == "web"){
             url = response.url;
-          }else if(response.type == "app"){
+          }else if(response.type == "app") {
             url = path + "/" + response.content;
           }
 
@@ -48,7 +48,7 @@ angular.module('starter.controllers', [])
 
     $scope.search = function(searchName){
       console.log("搜索内容:" + searchName);
-    }
+    };
   })
 
 .controller('ShopItemDetailCtrl',function($scope,$stateParams,$ionicLoading, Shop){
@@ -67,6 +67,9 @@ angular.module('starter.controllers', [])
 
     $scope.downloadApp = function(id, url){
       console.log(id + url);
+      Shop.download(id,function(res){
+        console.log(JSON.stringify(res))
+      })
     };
   })
 

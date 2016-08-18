@@ -48,10 +48,31 @@ angular.module('starter.services', [])
     }
   };
 })
-.factory('Shop',function($http){
+.factory('Shop',function($http, $cordovaFile,$cordovaFileTransfer){
     var shopItemList = [];//控制器间切换不会保留
+    var baseServerUrl = "http://api.moonrailgun.com/otaku";
+    /*var baseAppFilePath;
+    if(!!cordova.file){
+      baseAppFilePath = cordova.file.documentsDirectory + "apps";
+    }*/
 
     return {
+      checkDir:function(){
+        $cordovaFile.checkDir(cordova.file.documentsDirectory, "apps")
+          .then(function (success) {
+            // success
+            console.log(success);
+          }, function (error) {
+            // error
+            console.log(error);
+            $cordovaFile.createDir(cordova.file.documentsDirectory, "apps", false)
+              .then(function (success) {
+                // success
+                console.log("创建完毕");
+                alert("创建完毕");
+              });
+          });
+      },
       getList:function(callback){
         console.log("获取商店列表");
         $http.get("local/shop/shop-item-list.json")
@@ -80,51 +101,37 @@ angular.module('starter.services', [])
             }
           });
         }
+      },
+      download:function(id, callback){
+        this.checkDir();
+
+        var url = baseServerUrl + "/apps/" + id + ".zip";
+        var target = cordova.file.documentsDirectory + "apps/" + id + ".zip";//不能是中文
+        console.log(target);
+        var trustHosts = true;
+        var options = {};
+
+        var res = {
+          complete:false,
+          progress:0,
+          error:null
+        };
+        $cordovaFileTransfer.download(url, target, options, trustHosts)
+          .then(function(result){
+            // Success!
+            res.complete = true;
+            callback(res)
+          },function(err){
+            res.error = err;
+            callback(res);
+          },function(progress) {
+            res.progress = (progress.loaded / progress.total) * 100;
+            callback(res);
+          });
       }
     }
   })
 .factory('App',function($cordovaInAppBrowser){
     return{
-      open:function(detail,callback){
-        var url = detail.url;
-        var options = {
-          location: 'yes',
-          clearcache: 'yes',
-          toolbar: 'no'
-        };
-
-        $cordovaInAppBrowser.open(url, '_blank',options)
-          .then(function(event){
-            //success
-            $rootScope.$on('$cordovaInAppBrowser:loadstart', function(e, event){
-              callback('loadstart',e,event);
-            });
-
-            $rootScope.$on('$cordovaInAppBrowser:loadstop', function(e, event){
-              callback('loadstop',e,event);
-              /*// insert CSS via code / file
-              $cordovaInAppBrowser.insertCSS({
-                code: 'body {background-color:blue;}'
-              });
-
-              // insert Javascript via code / file
-              $cordovaInAppBrowser.executeScript({
-                file: 'script.js'
-              });*/
-            });
-
-            $rootScope.$on('$cordovaInAppBrowser:loaderror', function(e, event){
-              callback('loaderror',e,event);
-            });
-
-            $rootScope.$on('$cordovaInAppBrowser:exit', function(e, event){
-              callback('exit',e,event);
-            });
-          })
-          .catch(function(event){
-            //error
-            console.log('打开过程中发生错误')
-          });
-      }
     }
   });
