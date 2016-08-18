@@ -6,7 +6,7 @@ angular.module('starter.controllers', [])
       .success(function(response){
         $scope.apps = response
       });
-
+    
     $scope.openApp = function(name, path){
       console.log(name + "|" + path);
 
@@ -69,8 +69,9 @@ angular.module('starter.controllers', [])
       console.log(id + url);
       Shop.download(id,function(res){
         console.log(JSON.stringify(res));
-        if(res.success == true) {
+        if(res.complete == true) {
           console.log("下载完毕开始解压缩");
+          console.log(res.target);
           Shop.unzip(res.target);
         }
       })
@@ -85,8 +86,13 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, Shop) {
   $scope.settings = {
     enableFriends: true
   };
+  $scope.deleteAllApp = function(){
+    Shop.deleteAllApp(function(){
+      alert("所有APP删除完毕");
+    });
+  }
 });

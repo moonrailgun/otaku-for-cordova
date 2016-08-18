@@ -51,21 +51,18 @@ angular.module('starter.services', [])
 .factory('Shop',function($http, $cordovaFile,$cordovaFileTransfer,$cordovaZip){
     var shopItemList = [];//控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
-    /*var baseAppFilePath;
-    if(!!cordova.file){
-      baseAppFilePath = cordova.file.documentsDirectory + "apps";
-    }*/
+    var baseAppFilePath = "cdvfile://localhost/persistent/apps";//安卓兼容配置
 
     return {
       checkDir:function(){
-        $cordovaFile.checkDir(cordova.file.documentsDirectory, "apps")
+        $cordovaFile.checkDir("cdvfile://localhost/persistent/", "apps")
           .then(function (success) {
             // success
             console.log(success);
           }, function (error) {
             // error
             console.log(error);
-            $cordovaFile.createDir(cordova.file.documentsDirectory, "apps", false)
+            $cordovaFile.createDir("cdvfile://localhost/persistent/", "apps", false)
               .then(function (success) {
                 // success
                 console.log("创建完毕");
@@ -106,7 +103,7 @@ angular.module('starter.services', [])
         this.checkDir();
 
         var url = baseServerUrl + "/apps/" + id + ".zip";
-        var target = cordova.file.documentsDirectory + "apps/" + id + ".zip";//不能是中文
+        var target = baseAppFilePath + "/" + id + ".zip";//不能是中文
         console.log(target);
         var trustHosts = true;
         var options = {};
@@ -121,9 +118,10 @@ angular.module('starter.services', [])
         $cordovaFileTransfer.download(url, target, options, trustHosts)
           .then(function(result){
             // Success!
-            console.log("download success");
+            /*console.log("download success");
             res.complete = true;
-            callback(res)
+            callback(res)*/
+            console.log("success:" + JSON.stringify(result));
           },function(err){
             console.log("download error");
             res.error = err;
@@ -132,13 +130,14 @@ angular.module('starter.services', [])
             var _progress = (progress.loaded / progress.total) * 100;
             console.log("downloading..." + _progress);
             res.progress = _progress;
+            if(_progress == 100){
+              res.complete = true;
+            }
             callback(res);
           });
       },
       unzip:function(path){
-        var src = path;
-        var dest = cordova.file.documentsDirectory + "apps";
-        $cordovaZip.unzip(src, dest)
+        $cordovaZip.unzip(path, baseAppFilePath)
           .then(function(){
             console.log('success');
           },function(){
@@ -146,6 +145,16 @@ angular.module('starter.services', [])
           },function(progressEvent){
             console.log(progressEvent);
           })
+      },
+      deleteAllApp:function(callback){
+        $cordovaFile.removeRecursively("cdvfile://localhost/persistent/", "apps")
+          .then(function (success) {
+            // success
+            callback();
+          }, function (error) {
+            // error
+            console.log("删除失败:" + JSON.stringify(error));
+          });
       }
     }
   })
