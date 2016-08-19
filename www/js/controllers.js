@@ -1,3 +1,5 @@
+//过时的
+
 angular.module('starter.controllers', [])
   .controller('DashCtrl', function ($scope, $cordovaInAppBrowser, $http) {
     $scope.apps = [];
