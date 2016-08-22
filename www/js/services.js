@@ -61,7 +61,7 @@ angular.module('starter.services', [])
             console.log(success);
           }, function (error) {
             // error
-            console.log(error);
+            console.log("checkDir error: " + error);
             $cordovaFile.createDir("cdvfile://localhost/persistent/", "apps", false)
               .then(function (success) {
                 // success
@@ -100,6 +100,7 @@ angular.module('starter.services', [])
         }
       },
       download: function (id, callback) {
+        console.log(cordova);
         this.checkDir();
 
         var url = baseServerUrl + "/apps/" + id + ".zip";

@@ -31,7 +31,7 @@ angular.module('starter.controllers')
     });
 
     $scope.downloadApp = function (id, url) {
-      console.log(id + url);
+      console.log(id + "|" + url);
       Shop.download(id, function (res) {
         console.log(JSON.stringify(res));
         if (res.complete == true) {
