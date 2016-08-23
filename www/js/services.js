@@ -48,6 +48,33 @@ angular.module('starter.services', [])
       }
     };
   })
+  .factory('App', function ($cordovaFile) {
+    return {
+      getAppList:function(callback){
+        console.log("aaaaaaaaa");
+        $cordovaFile.checkFile("cdvfile://localhost/persistent/", "apps/catalog.json")
+          .then(function (success) {
+            // success
+            $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
+              .then(function (success) {
+                // success
+                console.log(JSON.stringify(success));
+              }, function (error) {
+                // error
+                console.log("读取失败:" + JSON.stringify(error));
+              });
+          }, function (error) {
+            // error
+            var data = [];
+            $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true);
+            callback(data);
+          });
+      },
+      checkApps:function(callback){
+
+      }
+    };
+  })
   .factory('Shop', function ($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
     var shopItemList = [];//控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
@@ -166,7 +193,4 @@ angular.module('starter.services', [])
           });
       }
     }
-  })
-  .factory('App', function ($cordovaInAppBrowser) {
-    return {}
   });

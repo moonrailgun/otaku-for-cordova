@@ -3,12 +3,16 @@
  */
 
 angular.module('starter.controllers')
-  .controller('DashCtrl', function ($scope, $cordovaInAppBrowser, $http) {
+  .controller('DashCtrl', function ($scope, $cordovaInAppBrowser, $http, App) {
     $scope.apps = [];
     $http.get('local/apps/catalog.json')
       .success(function (response) {
         $scope.apps = response
       });
+
+    App.getAppList(function(list){
+      console.log(JSON.stringify(list));
+    })
 
     $scope.openApp = function (name, path) {
       console.log(name + "|" + path);
