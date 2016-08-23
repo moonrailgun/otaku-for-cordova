@@ -3,13 +3,16 @@
  */
 
 angular.module('starter.controllers')
-  .controller('AccountCtrl', function ($scope, Shop) {
+  .controller('AccountCtrl', function ($scope, Shop,$ionicPopup) {
     $scope.settings = {
       enableFriends: true
     };
     $scope.deleteAllApp = function () {
       Shop.deleteAllApp(function () {
-        alert("所有APP删除完毕");
+        $ionicPopup.alert({
+          title: '',
+          template: '所有APP删除完毕'
+        });
       });
     }
   });
