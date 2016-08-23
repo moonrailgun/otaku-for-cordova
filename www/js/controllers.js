@@ -68,11 +68,13 @@ angular.module('starter.controllers', [])
 
     $scope.downloadApp = function (id, url) {
       console.log(id + url);
+      var isStartUnzip = false;
       Shop.download(id, function (res) {
         console.log(JSON.stringify(res));
-        if (res.complete == true) {
+        if (isStartUnzip == false && (res.complete == true || res.progress == 100) ) {
           console.log("下载完毕开始解压缩");
           console.log(res.target);
+          isStartUnzip = true;
           Shop.unzip(res.target);
         }
       })
@@ -87,13 +89,16 @@ angular.module('starter.controllers', [])
     $scope.chat = Chats.get($stateParams.chatId);
   })
 
-  .controller('AccountCtrl', function ($scope, Shop) {
+  .controller('AccountCtrl', function ($scope, Shop,$ionicPopup) {
     $scope.settings = {
       enableFriends: true
     };
     $scope.deleteAllApp = function () {
       Shop.deleteAllApp(function () {
-        alert("所有APP删除完毕");
+        $ionicPopup.alert({
+          title: '',
+          template: '所有APP删除完毕'
+        });
       });
     }
   });

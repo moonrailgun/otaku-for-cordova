@@ -48,7 +48,7 @@ angular.module('starter.services', [])
       }
     };
   })
-  .factory('Shop', function ($http, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
+  .factory('Shop', function ($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
     var shopItemList = [];//控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     var baseAppFilePath = "cdvfile://localhost/persistent/apps";//安卓兼容配置
@@ -61,7 +61,7 @@ angular.module('starter.services', [])
             console.log(success);
           }, function (error) {
             // error
-            console.log("checkDir error: " + error);
+            console.log("checkDir error: " + JSON.stringify(error));
             $cordovaFile.createDir("cdvfile://localhost/persistent/", "apps", false)
               .then(function (success) {
                 // success
@@ -119,10 +119,9 @@ angular.module('starter.services', [])
         $cordovaFileTransfer.download(url, target, options, trustHosts)
           .then(function (result) {
             // Success!
-            /*console.log("download success");
-             res.complete = true;
-             callback(res)*/
             console.log("success:" + JSON.stringify(result));
+            res.complete = true;
+            callback(res)
           }, function (err) {
             console.log("download error");
             res.error = err;
@@ -131,21 +130,30 @@ angular.module('starter.services', [])
             var _progress = (progress.loaded / progress.total) * 100;
             console.log("downloading..." + _progress);
             res.progress = _progress;
-            if (_progress == 100) {
-              res.complete = true;
-            }
             callback(res);
           });
       },
       unzip: function (path) {
         $cordovaZip.unzip(path, baseAppFilePath)
           .then(function () {
-            console.log('success');
+            console.log('unzip success');
+
+
+            //删除压缩包
+            var tmp = path.split('/');
+            var filename = tmp[tmp.length - 1];
+            $cordovaFile.removeFile("cdvfile://localhost/persistent/", "apps/" + filename)
+              .then(function(success){
+                console.log("压缩包删除成功:" + JSON.stringify(success));
+              },function(error){
+                console.log("压缩包删除失败" + JSON.stringify(error));
+              });
           }, function () {
-            console.log('error');
+            console.log('unzip error');
+            alert("文件解压缩失败");
           }, function (progressEvent) {
-            console.log(progressEvent);
-          })
+            console.log("文件解压缩中..." + JSON.stringify(progressEvent));
+          });
       },
       deleteAllApp: function (callback) {
         $cordovaFile.removeRecursively("cdvfile://localhost/persistent/", "apps")
