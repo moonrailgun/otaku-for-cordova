@@ -193,4 +193,19 @@ angular.module('starter.services', [])
           });
       }
     }
+  })
+  .factory('Download',function($rootScopt) {
+    var downloadList = [];
+    return {
+      addToDownloadList:function(obj) {
+        this.downloadList.append(obj);
+        this.updateDownloadList();
+      },
+      updateDownloadList : function(){
+        $rootScopt.$broadcast('OnDownloadListUpdate',this.downloadList);
+      },
+      getDownloadList : function(){
+        return this.downloadList;
+      }
+    };
   });
