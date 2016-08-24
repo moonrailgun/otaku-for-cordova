@@ -6,10 +6,20 @@
       </div>
       <div class="col col-50">
         <h3>{{item.name}}</h3>
-        <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.author}}123123132</p>
+        <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.author}}</p>
       </div>
-      <div class="col col-25 col-center text-center" ng-click="downloadApp(item.id, item.download)">
-        <a class="button button-calm">下载</a>
+      <div class="col col-25 col-center text-center">
+        <div ng-show="!isDownloading">
+          <div ng-show="!isDownloadComplete" ng-click="downloadApp(item.id, item.download)">
+            <a class="button button-calm">下载</a>
+          </div>
+          <div ng-show="isDownloadComplete" ng-click="openApp(item.id)">
+            <a class="button button-calm">打开</a>
+          </div>
+        </div>
+        <div ng-show="isDownloading">
+          <div data-radial-indicator="{radius : 26, percentage :true,barColor : '#87CEEB', initValue: 0}"></div>
+        </div>
       </div>
     </div>
 
