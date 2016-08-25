@@ -6,6 +6,7 @@ angular.module('starter.controllers')
   .controller('ShopCtrl', function ($scope, Shop, $ionicLoading) {
     $ionicLoading.show();
     $scope.items = [];
+    console.log("ShopCtrl");
     Shop.getList(function (items) {
       $ionicLoading.hide();
       $scope.items = items;

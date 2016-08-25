@@ -50,30 +50,42 @@ angular.module('starter.services', [])
   })
   .factory('App', function ($cordovaFile) {
     return {
+      addToAppList:function(obj,callback){
+        this.getAppList(function(data){
+
+        });
+      },
       getAppList:function(callback){
-        console.log("aaaaaaaaa");
+        console.log("获取app列表");
         $cordovaFile.checkFile("cdvfile://localhost/persistent/", "apps/catalog.json")
           .then(function (success) {
             // success
             $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
               .then(function (success) {
                 // success
-                console.log(JSON.stringify(success));
+                console.log("获取成功:" + JSON.stringify(success));
+                callback(JSON.parse(success));
+                //console.log()
+                //callback(data);
               }, function (error) {
                 // error
                 console.log("读取失败:" + JSON.stringify(error));
               });
           }, function (error) {
             // error
+            console.log("读取失败:" + JSON.stringify(error));
             var data = [];
-            $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true);
+            $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
+              .then(function(){
+                console.log("apps索引文件创建完毕");
+              });
             callback(data);
           });
       },
       checkApps:function(callback){
 
       }
-    };
+    }
   })
   .factory('Shop', function ($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
     var shopItemList = [];//控制器间切换不会保留
@@ -195,7 +207,7 @@ angular.module('starter.services', [])
     }
   })
   .factory('Download',function($rootScopt) {
-    var downloadList = [];
+    var downloadList = [];//{id:0,name:"计算器",progress:0}
     return {
       addToDownloadList:function(obj) {
         this.downloadList.append(obj);
