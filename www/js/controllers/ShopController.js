@@ -3,7 +3,7 @@
  */
 
 angular.module('starter.controllers')
-  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading) {
+  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading, App) {
     $ionicLoading.show();
     $scope.items = [];
     console.log("ShopCtrl");
@@ -50,7 +50,20 @@ angular.module('starter.controllers')
         if (res.complete == true) {
           console.log("下载完毕开始解压缩");
           console.log(res.target);
-          Shop.unzip(res.target);
+          Shop.unzip(res.target,function(){
+            //success
+            var path = "apps/" + id + "/package.json"
+            App.getAppInfo(path, function(obj){
+              //app信息写入索引
+              App.addToAppList({
+                id:obj.id,
+                name:obj.name,
+                version:obj.version,
+                type:obj.type,
+                infoPath:path
+              });
+            });
+          });
           $scope.isDownloading = false;
           $scope.isDownloadComplete = true;
         }

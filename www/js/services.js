@@ -50,9 +50,10 @@ angular.module('starter.services', [])
   })
   .factory('App', function ($cordovaFile) {
     return {
-      addToAppList:function(obj,callback){
+      addToAppList:function(obj){
         this.getAppList(function(data){
-
+          data.append(obj);
+          this.saveAppList(data);
         });
       },
       getAppList:function(callback){
@@ -82,8 +83,21 @@ angular.module('starter.services', [])
             callback(data);
           });
       },
-      checkApps:function(callback){
-
+      saveAppList:function(data){
+        $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
+          .then(function(){
+            console.log("apps索引文件保存完毕");
+          });
+      },
+      getAppInfo:function(path,callback){
+        //返回app信息
+        console.log("正在获取app信息:" + path);
+        $cordovaFile.readAsText("cdvfile://localhost/persistent/", path)
+          .then(function(success){
+            callback(JSON.parse(success));
+          },function(error){
+            console.log("读取失败:" + error);
+          })
       }
     }
   })
@@ -172,11 +186,10 @@ angular.module('starter.services', [])
             callback(res);
           });
       },
-      unzip: function (path) {
+      unzip: function (path, callback) {
         $cordovaZip.unzip(path, baseAppFilePath)
           .then(function () {
             console.log('unzip success');
-
 
             //删除压缩包
             var tmp = path.split('/');
@@ -187,6 +200,8 @@ angular.module('starter.services', [])
               },function(error){
                 console.log("压缩包删除失败" + JSON.stringify(error));
               });
+
+            callback();
           }, function () {
             console.log('unzip error');
             alert("文件解压缩失败");
