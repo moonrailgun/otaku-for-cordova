@@ -3,7 +3,7 @@
  */
 
 angular.module('starter.controllers')
-  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading, App) {
+  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading) {
     $ionicLoading.show();
     $scope.items = [];
     console.log("ShopCtrl");
@@ -17,7 +17,7 @@ angular.module('starter.controllers')
     };
   })
 
-  .controller('ShopItemDetailCtrl', function ($scope, $stateParams, $ionicLoading, Shop) {
+  .controller('ShopItemDetailCtrl', function ($scope, $stateParams, $ionicLoading, Shop, App) {
     $scope.screenshots = [];
     $scope.screenshotsSlide = 0;
     $scope.selectedTab = 0;

@@ -96,7 +96,7 @@ angular.module('starter.services', [])
           .then(function(success){
             callback(JSON.parse(success));
           },function(error){
-            console.log("读取失败:" + error);
+            console.log("读取失败:" + JSON.stringify(error));
           })
       }
     }
