@@ -50,12 +50,12 @@ angular.module('starter.services', [])
   })
   .factory('App', function ($cordovaFile) {
     return {
-      addToAppList:function(obj){
+      addToAppList:function(obj, callback){
         var _app = this;
         _app.getAppList(function(data){
           data.push(obj);
           console.log("添加信息:" + JSON.stringify(obj));
-          _app.saveAppList(data);
+          _app.saveAppList(data,callback);
         });
       },
       getAppList:function(callback) {
@@ -66,17 +66,17 @@ angular.module('starter.services', [])
             $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
               .then(function (success) {
                 // success
-                console.log("获取成功:" + success);
+                console.log("读取成功:" + success);
                 callback(JSON.parse(success));
                 //console.log()
                 //callback(data);
               }, function (error) {
                 // error
-                console.log("写入失败:" + JSON.stringify(error));
+                console.log("读取失败:" + JSON.stringify(error));
               });
           }, function (error) {
             // error
-            console.log("读取失败, 返回空数组:" + JSON.stringify(error));
+            console.log("文件不存在, 返回空数组:" + JSON.stringify(error));
             var data = [];
             $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
               .then(function(success){
@@ -87,11 +87,12 @@ angular.module('starter.services', [])
               });
           });
       },
-      saveAppList:function(data){
+      saveAppList:function(data, callback){
         console.log("saving app list:" + JSON.stringify(data));
         $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
           .then(function(success){
             console.log("apps索引文件保存完毕:" + JSON.stringify(success));
+            callback();
           },function(error){
             console.log("apps索引文件保存失败:" + JSON.stringify(error));
           });

@@ -1,13 +1,24 @@
 <ion-view view-title="我的应用">
   <ion-content class="padding">
     <div class="text-center">
+      <h4>系统应用</h4>
+    </div>
+    <div class="row row-wrap">
+      <div class="col col-33" ng-repeat="s_app in systemApps">
+        <div class="block text-center" ng-click="openSystemApp(s_app.name, s_app.path)">
+          <img ng-src="{{s_app.icon}}" style="width: 80%;border-radius: 20px">
+          <p>{{s_app.name}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="text-center" ng-if="localApps.length > 0">
       <h4>我的应用</h4>
     </div>
     <div class="row row-wrap">
-      <div class="col col-33" ng-repeat="app in apps">
-        <div class="block text-center" ng-click="openApp(app.name, app.path)">
-          <img ng-src="{{app.icon}}" style="width: 80%;border-radius: 20px">
-          <p>{{app.name}}</p>
+      <div class="col col-33" ng-repeat="l_app in localApps">
+        <div class="block text-center" ng-click="openLocalApp(l_app.id)">
+          <img ng-src="{{l_app.icon}}" style="width: 80%;border-radius: 20px">
+          <p>{{l_app.name}}</p>
         </div>
       </div>
     </div>

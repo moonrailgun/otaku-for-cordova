@@ -63,6 +63,8 @@ angular.module('starter.controllers')
                 version:obj.version,
                 type:obj.type,
                 infoPath:path
+              },function(){
+                $rootScope.$broadcast('UpdateView');//通知更新页面
               });
             });
           });

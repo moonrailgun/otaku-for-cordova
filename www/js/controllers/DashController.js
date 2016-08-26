@@ -5,20 +5,34 @@
 angular.module('starter.controllers')
   .controller('DashCtrl', function ($scope, App, $cordovaInAppBrowser, $http,$timeout) {
     console.log("DashCtrl");
-    $scope.apps = [];
+    $scope.systemApps = [];
+    $scope.localApps = [];
 
     $http.get('local/apps/catalog.json')
       .success(function (response) {
-        $scope.apps = response
+        $scope.systemApps = response
       });
 
-    $timeout(function(){
+    $timeout(function() {
       App.getAppList(function(list){
         console.log(list);
+        for(var i = 0;i<list.length;i++){
+          var item = list[i];
+
+          $scope.localApps.push({
+            id:item.id,
+            name:item.name,
+            icon:item.icon || "img/default_app_icon.png"
+          })
+        }
       })
     },100);
+
+    $scope.$on('UpdateView',function(){
+      console.log("UpdateView");
+    });
     
-    $scope.openApp = function (name, path) {
+    $scope.openSystemApp = function (name, path) {
       console.log(name + "|" + path);
 
       $http.get(path + '/package.json')
@@ -47,4 +61,8 @@ angular.module('starter.controllers')
           }
         });
     };
+
+    $scope.openLocalApp = function(id){
+      console.log("open local app:" + id);
+    }
   });
