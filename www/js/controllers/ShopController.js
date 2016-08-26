@@ -53,8 +53,10 @@ angular.module('starter.controllers')
           Shop.unzip(res.target,function(){
             //success
             var path = "apps/" + id + "/package.json"
+            console.log("解压完毕,开始查找app信息:" + path);
             App.getAppInfo(path, function(obj){
               //app信息写入索引
+              console.log("开始将App信息写入索引:" + JSON.stringify(obj));
               App.addToAppList({
                 id:obj.id,
                 name:obj.name,

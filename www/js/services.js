@@ -51,12 +51,14 @@ angular.module('starter.services', [])
   .factory('App', function ($cordovaFile) {
     return {
       addToAppList:function(obj){
-        this.getAppList(function(data){
-          data.append(obj);
-          this.saveAppList(data);
+        var _app = this;
+        _app.getAppList(function(data){
+          data.push(obj);
+          console.log("添加信息:" + JSON.stringify(obj));
+          _app.saveAppList(data);
         });
       },
-      getAppList:function(callback){
+      getAppList:function(callback) {
         console.log("获取app列表");
         $cordovaFile.checkFile("cdvfile://localhost/persistent/", "apps/catalog.json")
           .then(function (success) {
@@ -64,29 +66,34 @@ angular.module('starter.services', [])
             $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
               .then(function (success) {
                 // success
-                console.log("获取成功:" + JSON.stringify(success));
+                console.log("获取成功:" + success);
                 callback(JSON.parse(success));
                 //console.log()
                 //callback(data);
               }, function (error) {
                 // error
-                console.log("读取失败:" + JSON.stringify(error));
+                console.log("写入失败:" + JSON.stringify(error));
               });
           }, function (error) {
             // error
-            console.log("读取失败:" + JSON.stringify(error));
+            console.log("读取失败, 返回空数组:" + JSON.stringify(error));
             var data = [];
             $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
-              .then(function(){
+              .then(function(success){
                 console.log("apps索引文件创建完毕");
+                callback(data);
+              },function(error){
+                console.log("apps索引文件创建失败:" + JSON.stringify(error));
               });
-            callback(data);
           });
       },
       saveAppList:function(data){
+        console.log("saving app list:" + JSON.stringify(data));
         $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
-          .then(function(){
-            console.log("apps索引文件保存完毕");
+          .then(function(success){
+            console.log("apps索引文件保存完毕:" + JSON.stringify(success));
+          },function(error){
+            console.log("apps索引文件保存失败:" + JSON.stringify(error));
           });
       },
       getAppInfo:function(path,callback){
