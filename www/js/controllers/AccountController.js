@@ -3,16 +3,24 @@
  */
 
 angular.module('starter.controllers')
-  .controller('AccountCtrl', function ($scope, Shop,$ionicPopup) {
+  .controller('AccountCtrl', function($scope, Shop, $ionicPopup) {
     $scope.settings = {
       enableFriends: true
     };
-    $scope.deleteAllApp = function () {
-      Shop.deleteAllApp(function () {
-        $ionicPopup.alert({
-          title: '',
-          template: '所有APP删除完毕'
-        });
+    $scope.deleteAllApp = function() {
+      $ionicPopup.confirm({
+        title: '警告',
+        template: '是否删除所有APP'
+      }).then(function(res) {
+        console.log(res);
+        if (res == true) {
+          Shop.deleteAllApp(function() {
+            $ionicPopup.alert({
+              title: '',
+              template: '所有APP删除完毕'
+            });
+          });
+        }
       });
     }
   });

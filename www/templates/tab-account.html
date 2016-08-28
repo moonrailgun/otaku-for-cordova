@@ -2,11 +2,20 @@
   <ion-content>
     <ion-list>
       <ion-toggle  ng-model="settings.enableFriends">
-          Enable Friends
+        Enable Friends
       </ion-toggle>
       <ion-item class="assertive" ng-click="deleteAllApp();">
         删除所有应用
       </ion-item>
+      <ion-item class="item-divider">
+        应用
+      </ion-item>
+      <ion-toggle  ng-model="settings.enableLocal">
+        显示地址栏
+      </ion-toggle>
+      <ion-toggle  ng-model="settings.enableTool">
+        显示工具栏
+      </ion-toggle>
     </ion-list>
   </ion-content>
 </ion-view>
