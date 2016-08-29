@@ -1,8 +1,11 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-      <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
+      <ion-item class="item-divider">
+        管理
+      </ion-item>
+      <ion-toggle  ng-model="settings.enableOnlyWifi">
+        仅在Wi-Fi环境下下载
       </ion-toggle>
       <ion-item class="assertive" ng-click="deleteAllApp();">
         删除所有应用

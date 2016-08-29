@@ -7,7 +7,7 @@ angular.module('starter.controllers')
     $scope.settings = Locals.getObject('settings');
     if (Utils.isEmptyObject($scope.settings)) {
       $scope.settings = {
-        enableFriends: true,
+        enableOnlyWifi: true,
         enableLocal: true,
         enableTool: true
       }
