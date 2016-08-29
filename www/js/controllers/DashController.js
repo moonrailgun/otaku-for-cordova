@@ -3,40 +3,40 @@
  */
 
 angular.module('starter.controllers')
-  .controller('DashCtrl', function ($scope, App, $cordovaInAppBrowser, $http,$timeout) {
+  .controller('DashCtrl', function($scope, App, $cordovaInAppBrowser, $http, $timeout, Locals) {
     console.log("DashCtrl");
     $scope.systemApps = [];
     $scope.localApps = [];
 
     $http.get('local/apps/catalog.json')
-      .success(function (response) {
+      .success(function(response) {
         $scope.systemApps = response
       });
 
     $timeout(function() {
-      App.getAppList(function(list){
+      App.getAppList(function(list) {
         console.log(list);
-        for(var i = 0;i<list.length;i++){
+        for (var i = 0; i < list.length; i++) {
           var item = list[i];
 
           $scope.localApps.push({
-            id:item.id,
-            name:item.name,
-            icon:item.icon || "img/default_app_icon.png"
+            id: item.id,
+            name: item.name,
+            icon: item.icon || "img/default_app_icon.png"
           })
         }
       })
-    },100);
+    }, 100);
 
-    $scope.$on('UpdateView',function(){
+    $scope.$on('UpdateView', function() {
       console.log("UpdateView");
     });
-    
-    $scope.openSystemApp = function (name, path) {
+
+    $scope.openSystemApp = function(name, path) {
       console.log(name + "|" + path);
 
       $http.get(path + '/package.json')
-        .success(function (response) {
+        .success(function(response) {
           var url = "";
           if (response.type == "web") {
             url = response.url;
@@ -45,24 +45,25 @@ angular.module('starter.controllers')
           }
 
           if (url != "") {
+            var settings = Locals.getObject('settings');
             var options = {
-              location: 'yes',
+              location: settings.enableLocal == true ? 'yes' : 'no',
               clearcache: 'yes',
-              toolbar: 'yes'
+              toolbar: settings.enableTool == true ? 'yes' : 'no'
             };
             $cordovaInAppBrowser.open(url, '_blank', options)
-              .then(function (event) {
+              .then(function(event) {
                 // success
                 console.log(event);
               })
-              .catch(function (event) {
+              .catch(function(event) {
                 console.log(event);
               });
           }
         });
     };
 
-    $scope.openLocalApp = function(id){
+    $scope.openLocalApp = function(id) {
       console.log("open local app:" + id);
     }
   });

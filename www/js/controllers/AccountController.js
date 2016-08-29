@@ -3,10 +3,20 @@
  */
 
 angular.module('starter.controllers')
-  .controller('AccountCtrl', function($scope, Shop, $ionicPopup) {
-    $scope.settings = {
-      enableFriends: true
-    };
+  .controller('AccountCtrl', function($scope, Shop, $ionicPopup, Locals, Utils) {
+    $scope.settings = Locals.getObject('settings');
+    if (Utils.isEmptyObject($scope.settings)) {
+      $scope.settings = {
+        enableFriends: true,
+        enableLocal: true,
+        enableTool: true
+      }
+    }
+
+    $scope.$watch('settings', function(newValue, oldValue, scope) {
+      Locals.setObject('settings', newValue);
+    }, true);
+
     $scope.deleteAllApp = function() {
       $ionicPopup.confirm({
         title: '警告',

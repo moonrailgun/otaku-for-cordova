@@ -229,7 +229,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Download',function($rootScopt) {
+  .factory('Download', function($rootScopt) {
     var downloadList = [];//{id:0,name:"计算器",progress:0}
     return {
       addToDownloadList:function(obj) {
@@ -241,6 +241,38 @@ angular.module('starter.services', [])
       },
       getDownloadList : function(){
         return this.downloadList;
+      }
+    };
+  })
+  //本地存储数据===================================
+  .factory('Locals',['$window',function($window){
+      return{
+        //存储单个属性
+        set :function(key,value){
+          $window.localStorage[key]=value;
+        },
+        //读取单个属性
+        get:function(key,defaultValue){
+          return  $window.localStorage[key] || defaultValue;
+        },
+        //存储对象，以JSON格式存储
+        setObject:function(key,value){
+          $window.localStorage[key]=JSON.stringify(value);
+        },
+        //读取对象
+        getObject: function (key) {
+          return JSON.parse($window.localStorage[key] || '{}');
+        }
+
+      }
+  }])
+  .factory('Utils', function () {
+    return {
+      isEmptyObject(obj){
+        for(var x in obj){
+          return false;
+        }
+        return true;
       }
     };
   });
