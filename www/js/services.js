@@ -73,6 +73,7 @@ angular.module('starter.services', [])
               }, function(error) {
                 // error
                 console.log("读取失败:" + JSON.stringify(error));
+                callback([]);
               });
           }, function(error) {
             // error

@@ -17,7 +17,7 @@ angular.module('starter.controllers')
     };
   })
 
-  .controller('ShopItemDetailCtrl', function ($scope, $stateParams, $ionicLoading, Shop, App) {
+  .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App) {
     $scope.screenshots = [];
     $scope.screenshotsSlide = 0;
     $scope.selectedTab = 0;
@@ -33,10 +33,6 @@ angular.module('starter.controllers')
         //$scope.screenshots = item.screenshots;
       }
     });
-
-    var updateDownloadPercent = function(value){
-
-    }
 
     $scope.downloadApp = function (id, url) {
       console.log(id + "|" + url);
@@ -64,6 +60,7 @@ angular.module('starter.controllers')
                 type:obj.type,
                 infoPath:path
               },function(){
+                //添加完毕
                 $rootScope.$broadcast('UpdateView');//通知更新页面
               });
             });
