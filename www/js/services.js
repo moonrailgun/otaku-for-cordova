@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-  .factory('Chats', function () {
+.factory('Chats', function() {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -32,13 +32,13 @@ angular.module('starter.services', [])
     }];
 
     return {
-      all: function () {
+      all: function() {
         return chats;
       },
-      remove: function (chat) {
+      remove: function(chat) {
         chats.splice(chats.indexOf(chat), 1);
       },
-      get: function (chatId) {
+      get: function(chatId) {
         for (var i = 0; i < chats.length; i++) {
           if (chats[i].id === parseInt(chatId)) {
             return chats[i];
@@ -48,99 +48,131 @@ angular.module('starter.services', [])
       }
     };
   })
-  .factory('App', function ($cordovaFile) {
+  .factory('App', function($cordovaFile, $cordovaInAppBrowser, Locals) {
     return {
-      addToAppList:function(obj, callback){
+      addToAppList: function(obj, callback) {
         var _app = this;
-        _app.getAppList(function(data){
+        _app.getAppList(function(data) {
           data.push(obj);
           console.log("添加信息:" + JSON.stringify(obj));
-          _app.saveAppList(data,callback);
+          _app.saveAppList(data, callback);
         });
       },
-      getAppList:function(callback) {
+      getAppList: function(callback) {
         console.log("获取app列表");
         $cordovaFile.checkFile("cdvfile://localhost/persistent/", "apps/catalog.json")
-          .then(function (success) {
+          .then(function(success) {
             // success
             $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
-              .then(function (success) {
+              .then(function(success) {
                 // success
                 console.log("读取成功:" + success);
                 callback(JSON.parse(success));
                 //console.log()
                 //callback(data);
-              }, function (error) {
+              }, function(error) {
                 // error
                 console.log("读取失败:" + JSON.stringify(error));
               });
-          }, function (error) {
+          }, function(error) {
             // error
             console.log("文件不存在, 返回空数组:" + JSON.stringify(error));
             var data = [];
             $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
-              .then(function(success){
+              .then(function(success) {
                 console.log("apps索引文件创建完毕");
                 callback(data);
-              },function(error){
+              }, function(error) {
                 console.log("apps索引文件创建失败:" + JSON.stringify(error));
               });
           });
       },
-      saveAppList:function(data, callback){
+      saveAppList: function(data, callback) {
         console.log("saving app list:" + JSON.stringify(data));
         $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
-          .then(function(success){
+          .then(function(success) {
             console.log("apps索引文件保存完毕:" + JSON.stringify(success));
             callback();
-          },function(error){
+          }, function(error) {
             console.log("apps索引文件保存失败:" + JSON.stringify(error));
           });
       },
-      getAppInfo:function(path,callback){
+      getAppInfoById: function(id, callback) {
+        //根据id返回catalog中的信息
+        $cordovaFile.readAsText("cdvfile://localhost/persistent/", "apps/catalog.json")
+          .then(function(success) {
+            var json = JSON.parse(success);
+            if (!!json) {
+              var data;
+              for (var i = 0; i < json.length; i++) {
+                if (json[i].id == id) {
+                  data = json[i];
+                }
+              }
+              callback(data);
+            }
+          });
+      },
+      getAppInfo: function(path, callback) {
         //返回app信息
         console.log("正在获取app信息:" + path);
         $cordovaFile.readAsText("cdvfile://localhost/persistent/", path)
-          .then(function(success){
+          .then(function(success) {
             callback(JSON.parse(success));
-          },function(error){
+          }, function(error) {
             console.log("读取失败:" + JSON.stringify(error));
           })
+      },
+      openAppInBrowser: function(url) {
+        var settings = Locals.getObject('settings');
+        var options = {
+          location: settings.enableLocal == false ? 'no' : 'yes',
+          clearcache: 'yes',
+          toolbar: settings.enableTool == false ? 'no' : 'yes'
+        };
+        $cordovaInAppBrowser.open(url, '_blank', options)
+          .then(function(event) {
+            // success
+            console.log("[openAppInBrowser]success:" + JSON.stringify(event));
+          })
+          .catch(function(event) {
+            console.log("[openAppInBrowser]catch error:" + JSON.stringify(event));
+          });
       }
     }
   })
-  .factory('Shop', function ($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
-    var shopItemList = [];//控制器间切换不会保留
+  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
+    var shopItemList = []; //控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
-    var baseAppFilePath = "cdvfile://localhost/persistent/apps";//安卓兼容配置
+    var baseAppFilePath = "cdvfile://localhost/persistent/apps"; //安卓兼容配置
 
     return {
-      checkDir: function () {
+      checkDir: function() {
         $cordovaFile.checkDir("cdvfile://localhost/persistent/", "apps")
-          .then(function (success) {
+          .then(function(success) {
             // success
             console.log(success);
-          }, function (error) {
+          }, function(error) {
             // error
             console.log("checkDir error: " + JSON.stringify(error));
             $cordovaFile.createDir("cdvfile://localhost/persistent/", "apps", false)
-              .then(function (success) {
+              .then(function(success) {
                 // success
                 console.log("创建完毕");
                 alert("创建完毕");
               });
           });
       },
-      getList: function (callback) {
+      getList: function(callback) {
         console.log("获取商店列表");
         $http.get("local/shop/shop-item-list.json")
-          .success(function (response) {
+          .success(function(response) {
             console.log("获取商店列表完毕，共有" + response.length + "个应用");
             shopItemList = response;
             callback(shopItemList);
           });
       },
-      getItemDetail: function (id, callback) {
+      getItemDetail: function(id, callback) {
         if (shopItemList.length > 0) {
           //已获得商店完整列表
           for (var index in shopItemList) {
@@ -153,19 +185,19 @@ angular.module('starter.services', [])
           callback(null);
         } else {
           var getItemDetail = this.getItemDetail;
-          this.getList(function (shopItemList) {
+          this.getList(function(shopItemList) {
             if (shopItemList.length > 0) {
               getItemDetail(id, callback);
             }
           });
         }
       },
-      download: function (id, callback) {
+      download: function(id, callback) {
         console.log(cordova);
         this.checkDir();
 
         var url = baseServerUrl + "/apps/" + id + ".zip";
-        var target = baseAppFilePath + "/" + id + ".zip";//不能是中文
+        var target = baseAppFilePath + "/" + id + ".zip"; //不能是中文
         console.log(target);
         var trustHosts = true;
         var options = {};
@@ -178,51 +210,51 @@ angular.module('starter.services', [])
           target: target
         };
         $cordovaFileTransfer.download(url, target, options, trustHosts)
-          .then(function (result) {
+          .then(function(result) {
             // Success!
             console.log("success:" + JSON.stringify(result));
             res.complete = true;
             callback(res)
-          }, function (err) {
+          }, function(err) {
             console.log("download error");
             res.error = err;
             callback(res);
-          }, function (progress) {
+          }, function(progress) {
             var _progress = (progress.loaded / progress.total) * 100;
             console.log("downloading..." + _progress);
             res.progress = _progress;
             callback(res);
           });
       },
-      unzip: function (path, callback) {
+      unzip: function(path, callback) {
         $cordovaZip.unzip(path, baseAppFilePath)
-          .then(function () {
+          .then(function() {
             console.log('unzip success');
 
             //删除压缩包
             var tmp = path.split('/');
             var filename = tmp[tmp.length - 1];
             $cordovaFile.removeFile("cdvfile://localhost/persistent/", "apps/" + filename)
-              .then(function(success){
+              .then(function(success) {
                 console.log("压缩包删除成功:" + JSON.stringify(success));
-              },function(error){
+              }, function(error) {
                 console.log("压缩包删除失败" + JSON.stringify(error));
               });
 
             callback();
-          }, function () {
+          }, function() {
             console.log('unzip error');
             alert("文件解压缩失败");
-          }, function (progressEvent) {
+          }, function(progressEvent) {
             console.log("文件解压缩中..." + JSON.stringify(progressEvent));
           });
       },
-      deleteAllApp: function (callback) {
+      deleteAllApp: function(callback) {
         $cordovaFile.removeRecursively("cdvfile://localhost/persistent/", "apps")
-          .then(function (success) {
+          .then(function(success) {
             // success
             callback();
-          }, function (error) {
+          }, function(error) {
             // error
             console.log("删除失败:" + JSON.stringify(error));
           });
@@ -230,46 +262,46 @@ angular.module('starter.services', [])
     }
   })
   .factory('Download', function($rootScopt) {
-    var downloadList = [];//{id:0,name:"计算器",progress:0}
+    var downloadList = []; //{id:0,name:"计算器",progress:0}
     return {
-      addToDownloadList:function(obj) {
+      addToDownloadList: function(obj) {
         this.downloadList.append(obj);
         this.updateDownloadList();
       },
-      updateDownloadList : function(){
-        $rootScopt.$broadcast('OnDownloadListUpdate',this.downloadList);
+      updateDownloadList: function() {
+        $rootScopt.$broadcast('OnDownloadListUpdate', this.downloadList);
       },
-      getDownloadList : function(){
+      getDownloadList: function() {
         return this.downloadList;
       }
     };
   })
   //本地存储数据===================================
-  .factory('Locals',['$window',function($window){
-      return{
-        //存储单个属性
-        set :function(key,value){
-          $window.localStorage[key]=value;
-        },
-        //读取单个属性
-        get:function(key,defaultValue){
-          return  $window.localStorage[key] || defaultValue;
-        },
-        //存储对象，以JSON格式存储
-        setObject:function(key,value){
-          $window.localStorage[key]=JSON.stringify(value);
-        },
-        //读取对象
-        getObject: function (key) {
-          return JSON.parse($window.localStorage[key] || '{}');
-        }
-
-      }
-  }])
-  .factory('Utils', function () {
+  .factory('Locals', ['$window', function($window) {
     return {
-      isEmptyObject(obj){
-        for(var x in obj){
+      //存储单个属性
+      set: function(key, value) {
+        $window.localStorage[key] = value;
+      },
+      //读取单个属性
+      get: function(key, defaultValue) {
+        return $window.localStorage[key] || defaultValue;
+      },
+      //存储对象，以JSON格式存储
+      setObject: function(key, value) {
+        $window.localStorage[key] = JSON.stringify(value);
+      },
+      //读取对象
+      getObject: function(key) {
+        return JSON.parse($window.localStorage[key] || '{}');
+      }
+
+    }
+  }])
+  .factory('Utils', function() {
+    return {
+      isEmptyObject(obj) {
+        for (var x in obj) {
           return false;
         }
         return true;

@@ -19,18 +19,9 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
-
-      $ionicConfigProvider.tabs.position('bottom');
-      $ionicConfigProvider.platform.ios.navBar.alignTitle('center');
-      $ionicConfigProvider.platform.android.navBar.alignTitle('center');
-      $ionicConfigProvider.backButton.previousTitleText(false);
-      $ionicConfigProvider.platform.ios.backButton.previousTitleText('').icon('ion-ios-arrow-thin-left');
-      $ionicConfigProvider.platform.android.backButton.previousTitleText('').icon('ion-android-arrow-back');
-      $ionicConfigProvider.platform.ios.views.transition('ios');
-      $ionicConfigProvider.platform.android.views.transition('android');
     });
   })
-  .config(function($stateProvider, $urlRouterProvider) {
+  .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
@@ -100,6 +91,14 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/dash');
 
+    $ionicConfigProvider.tabs.position('bottom');
+    $ionicConfigProvider.platform.ios.navBar.alignTitle('center');
+    $ionicConfigProvider.platform.android.navBar.alignTitle('center');
+    $ionicConfigProvider.backButton.previousTitleText(false);
+    $ionicConfigProvider.platform.ios.backButton.previousTitleText('').icon('ion-ios-arrow-thin-left');
+    $ionicConfigProvider.platform.android.backButton.previousTitleText('').icon('ion-android-arrow-back');
+    $ionicConfigProvider.platform.ios.views.transition('ios');
+    $ionicConfigProvider.platform.android.views.transition('android');
   })
   .constant('$ionicLoadingConfig', {
     content: '正在载入中...',

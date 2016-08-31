@@ -15,7 +15,7 @@ angular.module('starter.controllers')
 
     $timeout(function() {
       App.getAppList(function(list) {
-        console.log(list);
+        //console.log(JSON.stringify(list));
         for (var i = 0; i < list.length; i++) {
           var item = list[i];
 
@@ -45,25 +45,25 @@ angular.module('starter.controllers')
           }
 
           if (url != "") {
-            var settings = Locals.getObject('settings');
-            var options = {
-              location: settings.enableLocal == true ? 'yes' : 'no',
-              clearcache: 'yes',
-              toolbar: settings.enableTool == true ? 'yes' : 'no'
-            };
-            $cordovaInAppBrowser.open(url, '_blank', options)
-              .then(function(event) {
-                // success
-                console.log(event);
-              })
-              .catch(function(event) {
-                console.log(event);
-              });
+            App.openAppInBrowser(url);
           }
         });
     };
 
     $scope.openLocalApp = function(id) {
       console.log("open local app:" + id);
+
+      App.getAppInfoById(id, function(data) {
+        console.log("app info:" + JSON.stringify(data))
+        if (!!data) {
+          App.getAppInfo(data.infoPath, function(info) {
+            console.log(JSON.stringify(info));
+            if(info.type == "app"){
+              var url = "cdvfile://localhost/persistent/apps/"+id + "/" + info.content;
+              App.openAppInBrowser(url);
+            }
+          })
+        }
+      });
     }
   });
