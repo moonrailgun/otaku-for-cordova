@@ -142,7 +142,7 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip) {
+  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer) {
     var shopItemList = []; //控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     var baseAppFilePath = "cdvfile://localhost/persistent/apps"; //安卓兼容配置
@@ -166,11 +166,15 @@ angular.module('starter.services', [])
       },
       getList: function(callback) {
         console.log("获取商店列表");
-        $http.get("local/shop/shop-item-list.json")
-          .success(function(response) {
-            console.log("获取商店列表完毕，共有" + response.length + "个应用");
-            shopItemList = response;
+        var shopListUrl = ApiServer + "/catalog.json"
+        $http.get(shopListUrl)
+          .success(function(data,status,headers,config) {
+            console.log("获取商店列表成功:" + JSON.stringify(data));
+            console.log("共有" + data.length + "个应用");
+            shopItemList = data;
             callback(shopItemList);
+          }).error(function(data,status,headers,config){
+            console.log(status + ":" +  data);
           });
       },
       getItemDetail: function(id, callback) {

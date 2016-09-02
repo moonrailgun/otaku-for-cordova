@@ -106,4 +106,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
     showBackdrop: true,
     maxWidth: 200,
     showDelay: 0
-  });
+  })
+  .constant('ApiServer', '/api')//本地api代理服务器地址
+  //.constant('ApiServer', 'http://moonrailgunapi.sourceforge.net/otaku')//远程api地址
+  ;
