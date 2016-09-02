@@ -85,6 +85,7 @@ angular.module('starter.services', [])
                 callback(data);
               }, function(error) {
                 console.log("apps索引文件创建失败:" + JSON.stringify(error));
+                callback(data);
               });
           });
       },
@@ -139,10 +140,21 @@ angular.module('starter.services', [])
           .catch(function(event) {
             console.log("[openAppInBrowser]catch error:" + JSON.stringify(event));
           });
+      },
+      chechAppExist: function(id, callback) {
+        this.getAppList(function(list) {
+          for (var i = 0; i < list.length; i++) {
+            if (list[i].id == id) {
+              callback(true);
+              return;
+            }
+          }
+          callback(false);
+        })
       }
     }
   })
-  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer) {
+  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer, App) {
     var shopItemList = []; //控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     var baseAppFilePath = "cdvfile://localhost/persistent/apps"; //安卓兼容配置
@@ -168,13 +180,13 @@ angular.module('starter.services', [])
         console.log("获取商店列表");
         var shopListUrl = ApiServer + "/catalog.json"
         $http.get(shopListUrl)
-          .success(function(data,status,headers,config) {
+          .success(function(data, status, headers, config) {
             console.log("获取商店列表成功:" + JSON.stringify(data));
             console.log("共有" + data.length + "个应用");
             shopItemList = data;
             callback(shopItemList);
-          }).error(function(data,status,headers,config){
-            console.log(status + ":" +  data);
+          }).error(function(data, status, headers, config) {
+            console.log(status + ":" + data);
           });
       },
       getItemDetail: function(id, callback) {
@@ -197,39 +209,45 @@ angular.module('starter.services', [])
           });
         }
       },
-      download: function(id, callback) {
-        console.log(cordova);
-        this.checkDir();
+      download: function(id, callback, isExistError) {
+        App.chechAppExist(id, function(isExist) {
+          if (!isExist) {
+            console.log(cordova);
+            this.checkDir();
 
-        var url = baseServerUrl + "/apps/" + id + ".zip";
-        var target = baseAppFilePath + "/" + id + ".zip"; //不能是中文
-        console.log(target);
-        var trustHosts = true;
-        var options = {};
+            var url = baseServerUrl + "/apps/" + id + ".zip";
+            var target = baseAppFilePath + "/" + id + ".zip"; //不能是中文
+            console.log(target);
+            var trustHosts = true;
+            var options = {};
 
-        var res = {
-          complete: false,
-          progress: 0,
-          error: null,
-          source: url,
-          target: target
-        };
-        $cordovaFileTransfer.download(url, target, options, trustHosts)
-          .then(function(result) {
-            // Success!
-            console.log("success:" + JSON.stringify(result));
-            res.complete = true;
-            callback(res)
-          }, function(err) {
-            console.log("download error");
-            res.error = err;
-            callback(res);
-          }, function(progress) {
-            var _progress = (progress.loaded / progress.total) * 100;
-            console.log("downloading..." + _progress);
-            res.progress = _progress;
-            callback(res);
-          });
+            var res = {
+              complete: false,
+              progress: 0,
+              error: null,
+              source: url,
+              target: target
+            };
+            $cordovaFileTransfer.download(url, target, options, trustHosts)
+              .then(function(result) {
+                // Success!
+                console.log("success:" + JSON.stringify(result));
+                res.complete = true;
+                callback(res)
+              }, function(err) {
+                console.log("download error");
+                res.error = err;
+                callback(res);
+              }, function(progress) {
+                var _progress = (progress.loaded / progress.total) * 100;
+                console.log("downloading..." + _progress);
+                res.progress = _progress;
+                callback(res);
+              });
+          }else{
+            isExistError();
+          }
+        });
       },
       unzip: function(path, callback) {
         $cordovaZip.unzip(path, baseAppFilePath)

@@ -88,7 +88,7 @@ angular.module('starter.controllers')
           App.getAppInfo(data.infoPath, function(info) {
             console.log(JSON.stringify(info));
             if (info.type == "app") {
-              var url = "cdvfile://localhost/persistent/apps/" + id + "/" + info.content;
+              var url = "cdvfile://localhost/persistent/apps/" + info.name + "/" + info.content;
               App.openAppInBrowser(url);
             }
           })

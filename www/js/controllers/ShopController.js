@@ -17,7 +17,7 @@ angular.module('starter.controllers')
     };
   })
 
-  .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App) {
+  .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App,$ionicPopup) {
     $scope.screenshots = [];
     $scope.screenshotsSlide = 0;
     $scope.selectedTab = 0;
@@ -34,7 +34,7 @@ angular.module('starter.controllers')
       }
     });
 
-    $scope.downloadApp = function (id, url) {
+    $scope.downloadApp = function (id, name, url) {
       console.log(id + "|" + url);
       $scope.isDownloading = true;
       Shop.download(id, function (res) {
@@ -48,13 +48,13 @@ angular.module('starter.controllers')
           console.log(res.target);
           Shop.unzip(res.target,function(){
             //success
-            var path = "apps/" + id + "/package.json"
+            var path = "apps/" + name + "/package.json"
             console.log("解压完毕,开始查找app信息:" + path);
             App.getAppInfo(path, function(obj){
               //app信息写入索引
               console.log("开始将App信息写入索引:" + JSON.stringify(obj));
               App.addToAppList({
-                id:obj.id,
+                id:id,
                 name:obj.name,
                 version:obj.version,
                 type:obj.type,
@@ -68,6 +68,14 @@ angular.module('starter.controllers')
           $scope.isDownloading = false;
           $scope.isDownloadComplete = true;
         }
+      },function(){
+        //app is exist
+        console.log('app 已存在');
+        $scope.isDownloading = false;
+        var alertPopup = $ionicPopup.alert({
+          title: '下载失败',
+          template: '该App已存在,请选择更新'
+        });
       });
     };
 
