@@ -5,7 +5,8 @@
         <img ng-src="{{item.icon}}" style="width: 100%; height: 100%">
       </div>
       <div class="col col-50">
-        <h3>{{item.name}}</h3>
+        <p style="font-size: 20px;font-weight:400;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding:6px 0">{{item.name}}</p>
+        <!-- <h4>{{item.name}}</h4> -->
         <p style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.author}}</p>
       </div>
       <div class="col col-25 col-center text-center">
@@ -88,7 +89,7 @@
             大小
           </div>
           <div class="col col-75">
-            {{(item.size / 1024).toFixed(2)}}MB
+            {{(item.size / 1024).toFixed(2)}}KB
           </div>
         </div>
         <div class="row">
