@@ -95,7 +95,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
     $ionicConfigProvider.platform.ios.navBar.alignTitle('center');
     $ionicConfigProvider.platform.android.navBar.alignTitle('center');
     $ionicConfigProvider.backButton.previousTitleText(false);
-    $ionicConfigProvider.platform.ios.backButton.previousTitleText('').icon('ion-ios-arrow-thin-left');
+    $ionicConfigProvider.platform.ios.backButton.previousTitleText('').icon('ion-ios-arrow-back');
     $ionicConfigProvider.platform.android.backButton.previousTitleText('').icon('ion-android-arrow-back');
     $ionicConfigProvider.platform.ios.views.transition('ios');
     $ionicConfigProvider.platform.android.views.transition('android');

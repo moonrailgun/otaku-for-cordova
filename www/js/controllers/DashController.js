@@ -13,6 +13,8 @@ angular.module('starter.controllers')
         $scope.systemApps = response
       });
 
+    
+
     $timeout(function() {
       App.getAppList(function(list) {
         //console.log(JSON.stringify(list));

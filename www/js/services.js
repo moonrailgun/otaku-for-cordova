@@ -154,7 +154,56 @@ angular.module('starter.services', [])
       }
     }
   })
-  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer, App) {
+  .factory('Download', function($rootScope) {
+    var downloadList = []; //局部存储缓冲{id:0,name:"计算器",progress:0}
+    $rootScope.downloadList = downloadList;//全局存储变量
+    return {
+      addToDownloadList: function(obj) {
+        if(this.checkDownloadListExist()){
+          console.log("添加到下载列表失败：下载列表已有该项目");
+        }else{
+          downloadList.push(obj);
+          this.updateDownloadList();
+        }
+      },
+      updateDownloadList: function() {
+        //$rootScopt.$broadcast('OnDownloadListUpdate', downloadList);
+        console.log("updateDownloadList" +JSON.stringify($rootScope.downloadList));
+        $rootScope.downloadList = downloadList;
+      },
+      getDownloadList: function() {
+        return downloadList;
+      },
+      checkDownloadListExist:function(id){
+        for(var i = 0;i<downloadList.length;i++){
+          if(downloadList[i].id == id){
+            return true;
+          }
+        }
+        return false;
+      },
+      removeDownloadList:function(id){
+        for(var i = 0;i<downloadList.length;i++){
+          if(downloadList[i].id == id){
+            downloadList.splice(i, 1);
+            this.updateDownloadList()
+            return;
+          }
+        }
+      },
+      //更新单个下载文件信息
+      updateDownloadingInfo:function(obj){
+        for(var i = 0;i<downloadList.length;i++){
+          if(downloadList[i].id == obj.id){
+            downloadList[i] = obj;
+            break;
+          }
+        }
+        this.updateDownloadList();
+      }
+    };
+  })
+  .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer, App, Download) {
     var shopItemList = []; //控制器间切换不会保留
     var baseServerUrl = "http://api.moonrailgun.com/otaku";
     var baseAppFilePath = "cdvfile://localhost/persistent/apps"; //安卓兼容配置
@@ -209,11 +258,12 @@ angular.module('starter.services', [])
           });
         }
       },
-      download: function(id, callback, isExistError) {
+      download: function(id, name, callback, isExistError) {
+        _shop = this;
         App.chechAppExist(id, function(isExist) {
           if (!isExist) {
             console.log(cordova);
-            this.checkDir();
+            _shop.checkDir();
 
             var url = baseServerUrl + "/apps/" + id + ".zip";
             var target = baseAppFilePath + "/" + id + ".zip"; //不能是中文
@@ -221,6 +271,15 @@ angular.module('starter.services', [])
             var trustHosts = true;
             var options = {};
 
+            //添加到下载列表
+            var downloadingInfo = {
+              id:id,
+              name:name,
+              progress:0
+            }
+            Download.addToDownloadList(downloadingInfo);
+
+            //创建下载任务
             var res = {
               complete: false,
               progress: 0,
@@ -233,18 +292,22 @@ angular.module('starter.services', [])
                 // Success!
                 console.log("success:" + JSON.stringify(result));
                 res.complete = true;
+                Download.removeDownloadList(id);//删除下载列表
                 callback(res)
               }, function(err) {
                 console.log("download error");
                 res.error = err;
+                Download.removeDownloadList(id);//删除下载列表
                 callback(res);
               }, function(progress) {
                 var _progress = (progress.loaded / progress.total) * 100;
                 console.log("downloading..." + _progress);
                 res.progress = _progress;
+                downloadingInfo.progress = _progress;
+                Download.updateDownloadingInfo(downloadingInfo);//更新下载列表
                 callback(res);
               });
-          }else{
+          } else {
             isExistError();
           }
         });
@@ -283,21 +346,6 @@ angular.module('starter.services', [])
           });
       }
     }
-  })
-  .factory('Download', function($rootScopt) {
-    var downloadList = []; //{id:0,name:"计算器",progress:0}
-    return {
-      addToDownloadList: function(obj) {
-        this.downloadList.append(obj);
-        this.updateDownloadList();
-      },
-      updateDownloadList: function() {
-        $rootScopt.$broadcast('OnDownloadListUpdate', this.downloadList);
-      },
-      getDownloadList: function() {
-        return this.downloadList;
-      }
-    };
   })
   //本地存储数据===================================
   .factory('Locals', ['$window', function($window) {

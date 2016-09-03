@@ -37,7 +37,7 @@ angular.module('starter.controllers')
     $scope.downloadApp = function (id, name, url) {
       console.log(id + "|" + url);
       $scope.isDownloading = true;
-      Shop.download(id, function (res) {
+      Shop.download(id, name, function (res) {
         console.log(JSON.stringify(res));
         if (res.progress) {
           $scope.indicatorValue = res.progress;
