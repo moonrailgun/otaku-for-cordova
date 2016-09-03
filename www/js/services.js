@@ -89,7 +89,7 @@ angular.module('starter.services', [])
               });
           });
       },
-      saveAppList: function(data, callback) {
+      saveAppList: function(data, callback, saveErrorCb) {
         console.log("saving app list:" + JSON.stringify(data));
         $cordovaFile.writeFile("cdvfile://localhost/persistent/", "apps/catalog.json", JSON.stringify(data), true)
           .then(function(success) {
@@ -97,6 +97,7 @@ angular.module('starter.services', [])
             callback();
           }, function(error) {
             console.log("apps索引文件保存失败:" + JSON.stringify(error));
+            saveErrorCb(error);
           });
       },
       getAppInfoById: function(id, callback) {
@@ -141,7 +142,7 @@ angular.module('starter.services', [])
             console.log("[openAppInBrowser]catch error:" + JSON.stringify(event));
           });
       },
-      chechAppExist: function(id, callback) {
+      checkAppExist: function(id, callback) {
         this.getAppList(function(list) {
           for (var i = 0; i < list.length; i++) {
             if (list[i].id == id) {
@@ -151,40 +152,76 @@ angular.module('starter.services', [])
           }
           callback(false);
         })
+      },
+      deleteAppById: function(id, callback, deleteErrorCb) {
+        var _app = this;
+        _app.checkAppExist(id, function(isExist) {
+          if (isExist) {
+            _app.getAppInfoById(id, function(info) {
+              console.log("删除应用信息:" + JSON.stringify(info));
+              var name = info.name;
+
+              _app.getAppList(function(list) {
+                for (var i = 0; i < list.length; i++) {
+                  if (list[i].id == id) {
+                    list.splice(i, 1); //删除该项
+                    _app.saveAppList(list, function() {
+                      //索引文件修改完毕。移除文件夹
+                      $cordovaFile.removeRecursively("cdvfile://localhost/persistent/", "apps/" + name)
+                        .then(function(success) {
+                          //文件删除完毕
+                          callback();
+                        }, function(error) {
+                          deleteErrorCb(error);
+                        });
+                    }, function(error) {
+                      //save error
+                      deleteErrorCb(error);
+                    })
+                  }
+                }
+              });
+            }, function(error) {
+              deleteErrorCb(error);
+            });
+          }else{
+            deleteErrorCb("应用不存在");
+          }
+        });
       }
     }
   })
   .factory('Download', function($rootScope) {
     var downloadList = []; //局部存储缓冲{id:0,name:"计算器",progress:0}
-    $rootScope.downloadList = downloadList;//全局存储变量
+    $rootScope.downloadList = downloadList; //全局存储变量
     return {
       addToDownloadList: function(obj) {
-        if(this.checkDownloadListExist()){
+        if (this.checkDownloadListExist()) {
           console.log("添加到下载列表失败：下载列表已有该项目");
-        }else{
+        } else {
           downloadList.push(obj);
           this.updateDownloadList();
         }
       },
       updateDownloadList: function() {
         //$rootScopt.$broadcast('OnDownloadListUpdate', downloadList);
-        console.log("updateDownloadList" +JSON.stringify($rootScope.downloadList));
+        console.log("updateDownloadList" + JSON.stringify($rootScope.downloadList));
         $rootScope.downloadList = downloadList;
       },
       getDownloadList: function() {
         return downloadList;
       },
-      checkDownloadListExist:function(id){
-        for(var i = 0;i<downloadList.length;i++){
-          if(downloadList[i].id == id){
+      checkDownloadListExist: function(id) {
+        for (var i = 0; i < downloadList.length; i++) {
+          if (downloadList[i].id == id) {
             return true;
           }
         }
         return false;
       },
-      removeDownloadList:function(id){
-        for(var i = 0;i<downloadList.length;i++){
-          if(downloadList[i].id == id){
+      removeDownloadList: function(id) {
+        for (var i = 0; i < downloadList.length; i++) {
+          if (downloadList[i].id == id) {
             downloadList.splice(i, 1);
             this.updateDownloadList()
             return;
@@ -192,9 +229,9 @@ angular.module('starter.services', [])
         }
       },
       //更新单个下载文件信息
-      updateDownloadingInfo:function(obj){
-        for(var i = 0;i<downloadList.length;i++){
-          if(downloadList[i].id == obj.id){
+      updateDownloadingInfo: function(obj) {
+        for (var i = 0; i < downloadList.length; i++) {
+          if (downloadList[i].id == obj.id) {
             downloadList[i] = obj;
             break;
           }
@@ -260,7 +297,7 @@ angular.module('starter.services', [])
       },
       download: function(id, name, callback, isExistError) {
         _shop = this;
-        App.chechAppExist(id, function(isExist) {
+        App.checkAppExist(id, function(isExist) {
           if (!isExist) {
             console.log(cordova);
             _shop.checkDir();
@@ -273,9 +310,9 @@ angular.module('starter.services', [])
 
             //添加到下载列表
             var downloadingInfo = {
-              id:id,
-              name:name,
-              progress:0
+              id: id,
+              name: name,
+              progress: 0
             }
             Download.addToDownloadList(downloadingInfo);
 
@@ -292,19 +329,19 @@ angular.module('starter.services', [])
                 // Success!
                 console.log("success:" + JSON.stringify(result));
                 res.complete = true;
-                Download.removeDownloadList(id);//删除下载列表
+                Download.removeDownloadList(id); //删除下载列表
                 callback(res)
               }, function(err) {
                 console.log("download error");
                 res.error = err;
-                Download.removeDownloadList(id);//删除下载列表
+                Download.removeDownloadList(id); //删除下载列表
                 callback(res);
               }, function(progress) {
                 var _progress = (progress.loaded / progress.total) * 100;
                 console.log("downloading..." + _progress);
                 res.progress = _progress;
                 downloadingInfo.progress = _progress;
-                Download.updateDownloadingInfo(downloadingInfo);//更新下载列表
+                Download.updateDownloadingInfo(downloadingInfo); //更新下载列表
                 callback(res);
               });
           } else {

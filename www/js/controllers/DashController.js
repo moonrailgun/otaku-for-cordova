@@ -3,7 +3,7 @@
  */
 
 angular.module('starter.controllers')
-  .controller('DashCtrl', function($scope, App, $cordovaInAppBrowser, $http, $timeout, Locals) {
+  .controller('DashCtrl', function($scope, App, $cordovaInAppBrowser, $http, $timeout, Locals,$ionicPopup) {
     console.log("DashCtrl");
     $scope.systemApps = [];
     $scope.localApps = [];
@@ -93,6 +93,24 @@ angular.module('starter.controllers')
               var url = "cdvfile://localhost/persistent/apps/" + info.name + "/" + info.content;
               App.openAppInBrowser(url);
             }
+          })
+        }
+      });
+    }
+
+    $scope.deleteApp = function(id){
+      $ionicPopup.confirm({
+        title: '警告',
+        template: '是否删除该APP'
+      }).then(function(res) {
+        console.log(res);
+        if (res == true) {
+          console.log("正在删除应用:" + id);
+          App.deleteAppById(id, function(){
+            console.log("删除应用成功");
+            $scope.update();
+          },function(error){
+            console.log("删除文件似乎出了一些错误: " + JSON.stringify(error));
           })
         }
       });
