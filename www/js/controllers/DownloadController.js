@@ -3,6 +3,6 @@
  */
 
 angular.module('starter.controllers')
-  .controller('DownloadCtrl', function ($scope) {
-
+  .controller('DownloadCtrl', function ($scope, $rootScope) {
+  	
   });

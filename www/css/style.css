@@ -27,25 +27,4 @@
   -webkit-transition:width .8s ease;
   -moz-transition:width .8s ease;
   transition:width .8s ease;
-  -webkit-animation:progressbar 7s infinite;
-  animation:progressbar 7s infinite
-}
-
-/* Chrome, Safari, Opera */
-@-webkit-keyframes progressbar {
-  from {
-    width:0
-  }
-  to {
-    width:100%
-  }
-}
-/* Standard syntax */
-@keyframes progressbar {
-  from {
-    width:0
-  }
-  to {
-    width:100%
-  }
 }

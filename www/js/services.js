@@ -220,8 +220,8 @@ angular.module('starter.services', [])
             $cordovaFile.createDir("cdvfile://localhost/persistent/", "apps", false)
               .then(function(success) {
                 // success
-                console.log("创建完毕");
-                alert("创建完毕");
+                console.log("apps文件夹创建完毕");
+                //alert("创建完毕");
               });
           });
       },
