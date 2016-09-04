@@ -40,6 +40,7 @@ angular.module('starter.controllers')
       Shop.download(id, name, function (res) {
         console.log(JSON.stringify(res));
         if (res.progress) {
+          console.log('更新圆形进度条:' + res.progress);
           $scope.indicatorValue = res.progress;
         }
 
