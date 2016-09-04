@@ -48,7 +48,7 @@ angular.module('starter.controllers')
           console.log(res.target);
           Shop.unzip(res.target,function(){
             //success
-            var path = "apps/" + name + "/package.json"
+            var path = "apps/" + name + "/otaku.project.json";
             console.log("解压完毕,开始查找app信息:" + path);
             App.getAppInfo(path, function(obj){
               //app信息写入索引
