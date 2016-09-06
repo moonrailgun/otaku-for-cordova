@@ -17,7 +17,7 @@ angular.module('starter.controllers')
     };
   })
 
-  .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App,$ionicPopup) {
+  .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App,$ionicPopup,Locals,$cordovaNetwork) {
     $scope.screenshots = [];
     $scope.screenshotsSlide = 0;
     $scope.selectedTab = 0;
@@ -34,8 +34,17 @@ angular.module('starter.controllers')
       }
     });
 
-    $scope.downloadApp = function (id, name, url) {
-      console.log(id + "|" + url);
+    $scope.downloadApp = function (id, name) {
+      console.log("开始下载:[" + id + "]");
+      if(Locals.getObject('settings').enableOnlyWifi == true){
+        var type = $cordovaNetwork.getNetwork();
+        console.log('网络状态:' + type);
+        if(type == Connection.CELL_2G || type == Connection.CELL_3G || type == Connection.CELL_4G){
+          console.log('使用的是手机网络,拒绝下载: ' + type);
+          return;
+        }
+      }
+
       $scope.isDownloading = true;
       Shop.download(id, name, function (res) {
         console.log(JSON.stringify(res));

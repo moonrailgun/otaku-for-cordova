@@ -22,11 +22,12 @@
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
     "cordova-plugin-inappbrowser",
-    "cordova-plugin-file-transfer",
-    "cordova-plugin-file",
     "cordova-plugin-compat",
     "cordova-plugin-file-opener2",
-    "cordova-plugin-zip"
+    "cordova-plugin-file-transfer",
+    "cordova-plugin-file",
+    "cordova-plugin-zip",
+    "cordova-plugin-network-information"
   ],
   "cordovaPlatforms": [
     {
@@ -38,6 +39,11 @@
       "platform": "browser",
       "version": "",
       "locator": "browser"
+    },
+    {
+      "platform": "ios",
+      "version": "",
+      "locator": "ios"
     }
   ]
 }
