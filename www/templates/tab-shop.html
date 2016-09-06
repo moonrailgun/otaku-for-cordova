@@ -1,4 +1,4 @@
-<ion-view view-title="Shop">
+<ion-view view-title="商店">
 
   <ion-content>
     <ion-list>
@@ -8,8 +8,8 @@
           <input type="search" placeholder="搜索" ng-model="searchName" ng-change="search(searchName)">
         </label>
       </div>
-      <ion-item class="item-avatar item-icon-right" ng-repeat="item in items" type="item-text-wrap" href="#/tab/shop/{{item.id}}">
-        <img ng-src="{{item.icon}}">
+      <ion-item class="item-avatar item-icon-right" ng-repeat="item in items | filter:searchName | orderBy:'updatedTime':true" type="item-text-wrap" href="#/tab/shop/{{item.id}}">
+        <img ng-src="{{item.icon}}">  
         <h2>{{item.name}}</h2>
         <p>{{item.description}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
