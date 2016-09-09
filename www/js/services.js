@@ -242,7 +242,7 @@ angular.module('starter.services', [])
   })
   .factory('Shop', function($http, App, $cordovaFile, $cordovaFileTransfer, $cordovaZip, ApiServer, App, Download) {
     var shopItemList = []; //控制器间切换不会保留
-    var baseServerUrl = "http://api.moonrailgun.com/otaku";
+    var baseServerUrl = ApiServer;
     var baseAppFilePath = "cdvfile://localhost/persistent/apps"; //安卓兼容配置
 
     return {
@@ -264,7 +264,7 @@ angular.module('starter.services', [])
       },
       getList: function(callback) {
         console.log("获取商店列表");
-        var shopListUrl = ApiServer + "/catalog.json"
+        var shopListUrl = ApiServer + "/admin/catalog.php"
         $http.get(shopListUrl)
           .success(function(data, status, headers, config) {
             console.log("获取商店列表成功:" + JSON.stringify(data));
@@ -295,14 +295,14 @@ angular.module('starter.services', [])
           });
         }
       },
-      download: function(id, name, callback, isExistError) {
+      download: function(id, name, url, callback, isExistError) {
         _shop = this;
         App.checkAppExist(id, function(isExist) {
           if (!isExist) {
             console.log(cordova);
             _shop.checkDir();
 
-            var url = baseServerUrl + "/apps/" + id + ".zip";
+            //var url = baseServerUrl + "/apps/" + id + ".zip";
             var target = baseAppFilePath + "/" + id + ".zip"; //不能是中文
             console.log(target);
             var trustHosts = true;

@@ -35,7 +35,8 @@ angular.module('starter.controllers')
     });
 
     $scope.downloadApp = function (id, name) {
-      console.log("开始下载:[" + id + "]");
+      var url = $scope.item.file;
+      console.log("开始下载:[" + id + "]" + url);
       if(Locals.getObject('settings').enableOnlyWifi == true){
         var type = $cordovaNetwork.getNetwork();
         console.log('网络状态:' + type);
@@ -46,7 +47,7 @@ angular.module('starter.controllers')
       }
 
       $scope.isDownloading = true;
-      Shop.download(id, name, function (res) {
+      Shop.download(id, name, url, function (res) {
         console.log(JSON.stringify(res));
         if (res.progress) {
           console.log('更新圆形进度条:' + res.progress);
