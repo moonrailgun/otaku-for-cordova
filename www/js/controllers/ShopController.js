@@ -3,18 +3,36 @@
  */
 
 angular.module('starter.controllers')
-  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading) {
+  .controller('ShopCtrl', function ($scope, Shop, $ionicLoading,Locals) {
     console.log("ShopCtrl");
     $scope.items = [];
     $ionicLoading.show();
     Shop.getList(function (items) {
       $ionicLoading.hide();
       $scope.items = items;
+      Locals.setObject('shopCache', items);
     });
 
     $scope.search = function (searchName) {
       console.log("搜索内容:" + searchName);
     };
+
+    $scope.update = function(){
+      var isRefreshComplete = false;
+      Shop.getList(function (items) {
+        $scope.items = items;
+        Locals.setObject('shopCache', items);
+
+        $scope.$broadcast('scroll.refreshComplete');
+        isRefreshComplete = true;
+      });
+      $timeout(function() {
+        if(!isRefreshComplete){
+          console.log("刷新超时");
+          $scope.$broadcast('scroll.refreshComplete');
+        }
+      }, 10000);
+    }
   })
 
   .controller('ShopItemDetailCtrl', function ($scope, $rootScope, $stateParams, $ionicLoading, Shop, App,$ionicPopup,Locals,$cordovaNetwork) {

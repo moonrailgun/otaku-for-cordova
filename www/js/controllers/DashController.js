@@ -3,17 +3,22 @@
  */
 
 angular.module('starter.controllers')
-  .controller('DashCtrl', function($scope, App, $cordovaInAppBrowser, $http, $timeout, Locals,$ionicPopup) {
+  .controller('DashCtrl', function($scope, App, $cordovaInAppBrowser, $http, $timeout, Locals, $ionicPopup) {
     console.log("DashCtrl");
     $scope.systemApps = [];
     $scope.localApps = [];
+
+    var shopCache = Locals.getObject('shopCache')
+    var tmp = [];
+    for (var i = 0; i < shopCache.length; i++) {
+      tmp[shopCache[i].id] = shopCache[i];
+    }
+    $scope.shopCache = tmp;
 
     $http.get('local/apps/catalog.json')
       .success(function(response) {
         $scope.systemApps = response
       });
-
-    
 
     $timeout(function() {
       App.getAppList(function(list) {
@@ -24,11 +29,11 @@ angular.module('starter.controllers')
           $scope.localApps.push({
             id: item.id,
             name: item.name,
-            icon: item.icon || "img/default_app_icon.png"
+            icon: item.icon || $scope.shopCache[item.id] && $scope.shopCache[item.id]["icon"] != "" ? $scope.shopCache[item.id]["icon"] : "img/default_app_icon.png"
           })
         }
       })
-    }, 100);
+    }, 1500);
 
     $scope.$on('UpdateView', function() {
       console.log("UpdateView");
@@ -37,6 +42,14 @@ angular.module('starter.controllers')
 
     $scope.update = function() {
       var isRefreshComplete = false;
+
+      var shopCache = Locals.getObject('shopCache')
+      var tmp = [];
+      for (var i = 0; i < shopCache.length; i++) {
+        tmp[shopCache[i].id] = shopCache[i];
+      }
+      $scope.shopCache = tmp;
+
       $http.get('local/apps/catalog.json')
         .success(function(response) {
           $scope.systemApps = response
@@ -49,14 +62,14 @@ angular.module('starter.controllers')
           $scope.localApps.push({
             id: item.id,
             name: item.name,
-            icon: item.icon || "img/default_app_icon.png"
+            icon: item.icon || $scope.shopCache[item.id] && $scope.shopCache[item.id]["icon"] != "" ? $scope.shopCache[item.id]["icon"] : "img/default_app_icon.png"
           })
         }
         $scope.$broadcast('scroll.refreshComplete');
         isRefreshComplete = true;
       });
       $timeout(function() {
-        if(!isRefreshComplete){
+        if (!isRefreshComplete) {
           console.log("刷新超时");
           $scope.$broadcast('scroll.refreshComplete');
         }
@@ -92,13 +105,16 @@ angular.module('starter.controllers')
             if (info.type == "app") {
               var url = "cdvfile://localhost/persistent/apps/" + info.name + "/" + info.content;
               App.openAppInBrowser(url);
+            } else if (info.type == "html") {
+              var url = info.content;
+              App.openAppInBrowser(url);
             }
           })
         }
       });
     }
 
-    $scope.deleteApp = function(id){
+    $scope.deleteApp = function(id) {
       $ionicPopup.confirm({
         title: '警告',
         template: '是否删除该APP'
@@ -106,10 +122,10 @@ angular.module('starter.controllers')
         console.log(res);
         if (res == true) {
           console.log("正在删除应用:" + id);
-          App.deleteAppById(id, function(){
+          App.deleteAppById(id, function() {
             console.log("删除应用成功");
             $scope.update();
-          },function(error){
+          }, function(error) {
             console.log("删除文件似乎出了一些错误: " + JSON.stringify(error));
           })
         }

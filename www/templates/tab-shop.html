@@ -1,6 +1,6 @@
 <ion-view view-title="商店">
-
   <ion-content>
+    <ion-refresher pulling-text="下拉刷新" on-refresh="update()"></ion-refresher>
     <ion-list>
       <div class="bar bar-header item-input-inset">
         <label class="item-input-wrapper">
@@ -9,7 +9,7 @@
         </label>
       </div>
       <ion-item class="item-avatar item-icon-right" ng-repeat="item in items | filter:searchName | orderBy:'updatedTime':true" type="item-text-wrap" href="#/tab/shop/{{item.id}}">
-        <img ng-src="{{item.icon}}">  
+        <img ng-src="{{item.icon||'img/default_app_icon.png'}}">  
         <h2>{{item.name}}</h2>
         <p>{{item.description}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
