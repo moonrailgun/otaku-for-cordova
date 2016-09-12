@@ -11,6 +11,9 @@ angular.module('starter.controllers')
       $ionicLoading.hide();
       $scope.items = items;
       Locals.setObject('shopCache', items);
+    },function(status){
+      console.log("第一次获取超时:" + status);
+      $ionicLoading.hide();
     });
 
     $scope.search = function (searchName) {
@@ -18,20 +21,16 @@ angular.module('starter.controllers')
     };
 
     $scope.update = function(){
-      var isRefreshComplete = false;
       Shop.getList(function (items) {
         $scope.items = items;
         Locals.setObject('shopCache', items);
 
         $scope.$broadcast('scroll.refreshComplete');
-        isRefreshComplete = true;
+      },function(status){
+        //error
+        console.log("刷新超时:" + status);
+        $scope.$broadcast('scroll.refreshComplete');
       });
-      $timeout(function() {
-        if(!isRefreshComplete){
-          console.log("刷新超时");
-          $scope.$broadcast('scroll.refreshComplete');
-        }
-      }, 10000);
     }
   })
 
@@ -41,6 +40,7 @@ angular.module('starter.controllers')
     $scope.selectedTab = 0;
     $scope.isDownloading = false;
     $scope.isDownloadComplete = false;
+    $scope.canOpenApp = false;
     
 
     $ionicLoading.show();
@@ -52,6 +52,11 @@ angular.module('starter.controllers')
       }
     });
 
+    App.checkAppExist(function(isExist){
+      console.log("app 存在检测结果:" + isExist);
+      $scope.canOpenApp = isExist;
+    });
+
     $scope.downloadApp = function (id, name) {
       var url = $scope.item.file;
       console.log("开始下载:[" + id + "]" + url);
@@ -60,6 +65,10 @@ angular.module('starter.controllers')
         console.log('网络状态:' + type);
         if(type == Connection.CELL_2G || type == Connection.CELL_3G || type == Connection.CELL_4G){
           console.log('使用的是手机网络,拒绝下载: ' + type);
+          var alertPopup = $ionicPopup.alert({
+            title: '拒绝下载',
+            template: '使用的是手机网络,请在设置页面调整'
+          });
           return;
         }
       }
@@ -110,5 +119,7 @@ angular.module('starter.controllers')
 
     $scope.openApp = function(id){
       console.log("open app:" + id);
+
+      App.openApp(id);
     }
   })

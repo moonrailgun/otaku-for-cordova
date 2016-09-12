@@ -144,6 +144,7 @@ angular.module('starter.services', [])
       },
       checkAppExist: function(id, callback) {
         this.getAppList(function(list) {
+          console.log("开始进行APP存在性检测");
           for (var i = 0; i < list.length; i++) {
             if (list[i].id == id) {
               callback(true);
@@ -186,6 +187,26 @@ angular.module('starter.services', [])
             });
           }else{
             deleteErrorCb("应用不存在");
+          }
+        });
+      },
+      openApp:function(id) {
+        _app = this;
+        _app.getAppInfoById(id, function(data) {
+          console.log("app info:" + JSON.stringify(data))
+          if (!!data) {
+            _app.getAppInfo(data.infoPath, function(info) {
+              console.log(JSON.stringify(info));
+              if (info.type == "app") {
+                var url = "cdvfile://localhost/persistent/apps/" + info.name + "/" + info.content;
+                _app.openAppInBrowser(url);
+              } else if (info.type == "html") {
+                var url = info.content;
+                _app.openAppInBrowser(url);
+              }
+            })
+          }else{
+            console.log("应用不存在,打开失败");
           }
         });
       }
@@ -262,7 +283,7 @@ angular.module('starter.services', [])
               });
           });
       },
-      getList: function(callback) {
+      getList: function(callback,error) {
         console.log("获取商店列表");
         var shopListUrl = ApiServer + "/admin/catalog.php"
         $http.get(shopListUrl)
@@ -273,6 +294,7 @@ angular.module('starter.services', [])
             callback(shopItemList);
           }).error(function(data, status, headers, config) {
             console.log(status + ":" + data);
+            error(status);
           });
       },
       getItemDetail: function(id, callback) {

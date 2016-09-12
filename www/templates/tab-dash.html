@@ -17,9 +17,11 @@
     </div>
     <div class="row row-wrap">
       <div class="col col-33" ng-repeat="l_app in localApps">
-        <div class="block text-center" ng-click="openLocalApp(l_app.id)" on-hold="deleteApp(l_app.id);">
-          <img ng-src="{{l_app.icon}}" style="width: 80%;border-radius: 20px">
-          <p>{{l_app.name}}</p>
+        <div class="block" ng-click="openLocalApp(l_app.id)" on-hold="deleteApp(l_app.id);">
+          <div class="cube-img-wrap">
+            <div class="cube-img-container"><img ng-src="{{l_app.icon}}" style="border-radius: 10px"></div>
+          </div>
+          <p class="text-center">{{l_app.name}}</p>
         </div>
       </div>
     </div>

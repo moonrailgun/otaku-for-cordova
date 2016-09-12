@@ -97,21 +97,7 @@ angular.module('starter.controllers')
     $scope.openLocalApp = function(id) {
       console.log("open local app:" + id);
 
-      App.getAppInfoById(id, function(data) {
-        console.log("app info:" + JSON.stringify(data))
-        if (!!data) {
-          App.getAppInfo(data.infoPath, function(info) {
-            console.log(JSON.stringify(info));
-            if (info.type == "app") {
-              var url = "cdvfile://localhost/persistent/apps/" + info.name + "/" + info.content;
-              App.openAppInBrowser(url);
-            } else if (info.type == "html") {
-              var url = info.content;
-              App.openAppInBrowser(url);
-            }
-          })
-        }
-      });
+      App.openApp(id);
     }
 
     $scope.deleteApp = function(id) {

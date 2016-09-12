@@ -2,7 +2,7 @@
   <ion-content class="padding">
     <div class="row">
       <div class="col col-25">
-        <img ng-src="{{item.icon||'img/default_app_icon.png'}}" style="width: 100%; height: 100%">
+        <img ng-src="{{item.icon||'img/default_app_icon.png'}}">
       </div>
       <div class="col col-50">
         <p style="font-size: 20px;font-weight:400;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding:6px 0">{{item.name}}</p>
@@ -11,10 +11,10 @@
       </div>
       <div class="col col-25 col-center text-center">
         <div ng-show="!isDownloading">
-          <div ng-show="!isDownloadComplete" ng-click="downloadApp(item.id, item.name)">
+          <div ng-show="!isDownloadComplete && !canOpenApp" ng-click="downloadApp(item.id, item.name)">
             <a class="button button-calm">下载</a>
           </div>
-          <div ng-show="isDownloadComplete" ng-click="openApp(item.id)">
+          <div ng-show="isDownloadComplete || canOpenApp" ng-click="openApp(item.id)">
             <a class="button button-calm">打开</a>
           </div>
         </div>
@@ -24,11 +24,11 @@
       </div>
     </div>
 
-    <div class="button-bar bar-light padding-bottom">
+    <!-- <div class="button-bar bar-light padding-bottom">
       <a class="button" ng-class="{true:'button-dark'}[selectedTab == 0]" ng-click="selectedTab=0">详情</a>
       <a class="button" ng-class="{true:'button-dark'}[selectedTab == 1]" ng-click="selectedTab=1">评论</a>
       <a class="button" ng-class="{true:'button-dark'}[selectedTab == 2]" ng-click="selectedTab=2">相关</a>
-    </div>
+    </div> -->
 
     <div ng-if="selectedTab==0">
       <ion-slide-box class=" padding-bottom" active-slide="screenshotsSlide">

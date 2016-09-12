@@ -28,3 +28,25 @@
   -moz-transition:width .8s ease;
   transition:width .8s ease;
 }
+
+.cube-img-wrap{
+    width: 60%; /* 这里设置占屏幕宽度百分比 */
+    margin: 0 auto; 
+}
+
+/* 创建一个正方形容器 */
+.cube-img-container{
+    width: 100%;
+    height: 0px;
+    padding-bottom: 100%;
+    overflow:hidden;
+    margin: 0;
+    position:relative;
+}
+
+/* 采用绝对定位 */
+.cube-img-wrap img{
+    position:absolute;
+    width: 100%;
+    height: 100%;
+}
