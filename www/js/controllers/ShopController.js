@@ -52,7 +52,7 @@ angular.module('starter.controllers')
       }
     });
 
-    App.checkAppExist(function(isExist){
+    App.checkAppExist($stateParams.itemId,function(isExist){
       console.log("app 存在检测结果:" + isExist);
       $scope.canOpenApp = isExist;
     });
