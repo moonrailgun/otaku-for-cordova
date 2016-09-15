@@ -7,9 +7,9 @@ Otaku!基于ionic+AngularJS+Cordova技术制作的html5移动应用中心
 [如何开发基于Otaku!的HTML5移动应用程序](#开发Otaku!项目)
 
 ## 快照 ##
-![](./doc/1.png)
-![](./doc/2.png)
-![](./doc/3.png)
+![](./doc/1.PNG)
+![](./doc/2.PNG)
+![](./doc/3.PNG)
 
 ## 开发Otaku!项目 ##
 1. 进行正常html5 app开发
